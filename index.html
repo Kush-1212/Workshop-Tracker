@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glass & Aluminium Operations OS - Station Display</title>
+<style>
+  :root {
+    --primary: #0f172a;
+    --primary-accent: #2563eb;
+    --bg: #f1f5f9;
+    --surface: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border: #cbd5e1;
+    --border-light: #e2e8f0;
+
+    --c-ready-bg: #dcfce7;
+    --c-ready-txt: #15803d;
+    --c-process-bg: #dbeafe;
+    --c-process-txt: #1d4ed8;
+    --c-vendor-bg: #fef3c7;
+    --c-vendor-txt: #b45309;
+    --c-delayed-bg: #fee2e2;
+    --c-delayed-txt: #b91c1c;
+    --c-neutral-bg: #f1f5f9;
+    --c-neutral-txt: #475569;
+
+    /* Station Screen Palette */
+    --st-bg: #090d16;
+    --st-surface: #111827;
+    --st-border: #1f2937;
+    --st-text: #f9fafb;
+    --st-amber: #fbbf24;
+    --st-green: #34d399;
+    --st-red: #f87171;
+    --st-blue: #60a5fa;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  body { background: var(--bg); color: var(--text-main); line-height: 1.4; }
+
+  /* Normal App View Wrapper */
+  #managerView { padding: 18px; }
+
+  /* Top Navigation */
+  .top-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px; margin-bottom: 18px; background: var(--surface); padding: 16px 20px; border-radius: 8px; border: 1px solid var(--border-light); }
+  .branding h1 { font-size: 19px; font-weight: 800; color: var(--primary); }
+  .branding p { font-size: 12px; color: var(--text-muted); }
+  .top-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 5px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: all 0.15s ease; }
+  .btn-primary { background: var(--primary-accent); color: #fff; }
+  .btn-primary:hover { background: #1d4ed8; }
+  .btn-secondary { background: #fff; border-color: var(--border); color: var(--text-main); }
+  .btn-secondary:hover { background: #f8fafc; }
+  .btn-danger { background: #fff; border-color: #fca5a5; color: var(--c-delayed-txt); }
+  .btn-station-launch { background: #111827; color: #fbbf24; border: 1px solid #374151; font-weight: 700; box-shadow: 0 0 10px rgba(251, 191, 36, 0.2); }
+  .btn-station-launch:hover { background: #000; color: #fef08a; }
+  .btn-add { background: #eff6ff; color: var(--primary-accent); border: 1px dashed var(--primary-accent); padding: 6px 12px; font-size: 12px; width: 100%; justify-content: center; margin-top: 6px; border-radius: 4px; }
+
+  /* Filter Bar */
+  .filter-bar { display: flex; gap: 8px; margin-bottom: 18px; overflow-x: auto; padding-bottom: 4px; }
+  .filter-chip { padding: 5px 12px; border-radius: 16px; font-size: 12px; font-weight: 600; background: var(--surface); border: 1px solid var(--border); cursor: pointer; color: var(--text-muted); white-space: nowrap; }
+  .filter-chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+  /* Sites Grid */
+  .sites-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; }
+  .site-card { background: var(--surface); border-radius: 8px; border: 1px solid var(--border-light); padding: 16px; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; position: relative; border-left: 6px solid #94a3b8; }
+  .site-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.06); }
+  .site-card.border-ready { border-left-color: var(--c-ready-txt); }
+  .site-card.border-processing { border-left-color: var(--c-process-txt); }
+  .site-card.border-vendor { border-left-color: var(--c-vendor-txt); }
+  .site-card.border-delayed { border-left-color: var(--c-delayed-txt); }
+
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+  .card-client { font-size: 15px; font-weight: 700; color: var(--text-main); }
+  .card-arch { font-size: 11px; color: var(--text-muted); }
+  
+  .auto-stage-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px; margin-bottom: 8px; width: 100%; }
+  
+  .progress-wrap { margin: 8px 0; }
+  .progress-bar-bg { background: #e2e8f0; height: 6px; border-radius: 3px; overflow: hidden; }
+  .progress-bar-fill { background: var(--c-ready-txt); height: 100%; transition: width 0.3s ease; }
+  .progress-meta { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); font-weight: 600; margin-top: 3px; }
+
+  .gates-row { display: flex; gap: 10px; padding: 6px 0; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); margin-bottom: 10px; font-size: 11px; }
+  .gate-indicator { display: flex; align-items: center; gap: 4px; font-weight: 600; }
+  .gate-ok { color: var(--c-ready-txt); }
+  .gate-pending { color: var(--text-muted); }
+
+  .pipeline-card-list { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+  .item-micro-card { background: #f8fafc; border: 1px solid var(--border-light); border-radius: 5px; padding: 6px 8px; font-size: 11px; }
+  .item-micro-header { display: flex; justify-content: space-between; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+  .item-badge-flex { display: flex; gap: 4px; flex-wrap: wrap; }
+  
+  .status-pill { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.3px; display: inline-flex; align-items: center; gap: 3px; }
+  .badge-ready { background: var(--c-ready-bg); color: var(--c-ready-txt); }
+  .badge-processing { background: var(--c-process-bg); color: var(--c-process-txt); }
+  .badge-vendor { background: var(--c-vendor-bg); color: var(--c-vendor-txt); }
+  .badge-delayed { background: var(--c-delayed-bg); color: var(--c-delayed-txt); }
+  .badge-neutral { background: var(--c-neutral-bg); color: var(--c-neutral-txt); }
+
+  /* Modal */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.65); backdrop-filter: blur(2px); z-index: 1000; align-items: center; justify-content: center; padding: 10px; }
+  .modal-overlay.active { display: flex; }
+  .modal-window { background: var(--surface); width: 100%; max-width: 1100px; max-height: 95vh; border-radius: 10px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.25); }
+  .modal-header { padding: 14px 20px; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; background: #fafafa; }
+  .modal-header h2 { font-size: 16px; color: var(--primary); font-weight: 700; }
+  .modal-body { padding: 18px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+  .modal-footer { padding: 12px 20px; border-top: 1px solid var(--border-light); background: #fafafa; display: flex; justify-content: space-between; align-items: center; }
+
+  .form-grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+  .field-group { display: flex; flex-direction: column; gap: 4px; }
+  .field-group label { font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--text-muted); }
+  .field-group input, .field-group select { padding: 7px 10px; border: 1px solid var(--border); border-radius: 5px; font-size: 12px; outline: none; }
+  .live-calc-box { grid-column: span 3; background: #f8fafc; border: 1px solid var(--border); padding: 10px 14px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
+
+  .module-card { border: 1px solid var(--border); border-radius: 6px; padding: 12px; background: #ffffff; }
+  .module-title { font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border-light); }
+  .repeater-row { display: grid; gap: 6px; align-items: center; background: #f8fafc; padding: 8px; border-radius: 5px; margin-bottom: 6px; border: 1px solid var(--border-light); font-size: 12px; }
+  .repeater-row input, .repeater-row select { font-size: 11px; padding: 5px 6px; border: 1px solid var(--border); border-radius: 4px; background: #fff; width: 100%; }
+  .btn-remove-row { color: var(--c-delayed-txt); background: none; border: none; font-size: 15px; cursor: pointer; padding: 0 4px; font-weight: bold; }
+
+  .row-shutter, .row-slimline { grid-template-columns: 1.1fr 1.1fr 1fr 1.1fr 1.2fr auto; }
+  .row-mirror { grid-template-columns: 1fr 1fr 1fr 1.1fr 1fr 1fr 1.1fr auto; }
+  .row-toughened { grid-template-columns: 1.2fr 1fr 1fr 1fr auto; }
+  .row-shelf { grid-template-columns: 1.5fr 1fr 1.2fr auto; }
+
+  /* =======================================================
+     STATION SCREEN DISPLAY MODE (FLIGHT/TRAIN DEPARTURES)
+  ======================================================= */
+  #stationView {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--st-bg);
+    color: var(--st-text);
+    z-index: 2000;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  #stationView.active { display: flex; }
+
+  /* Station Top Header Bar */
+  .station-header {
+    background: #000;
+    padding: 14px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #1f2937;
+  }
+  .station-brand { display: flex; align-items: center; gap: 14px; }
+  .station-title { font-size: 20px; font-weight: 900; letter-spacing: 1px; color: #f9fafb; text-transform: uppercase; }
+  .station-sub { font-size: 11px; color: #9ca3af; letter-spacing: 0.5px; }
+
+  .station-clock-box {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .station-clock {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--st-amber);
+    background: #18181b;
+    padding: 4px 14px;
+    border-radius: 6px;
+    border: 1px solid #27272a;
+    letter-spacing: 2px;
+  }
+  .station-controls { display: flex; gap: 8px; }
+
+  /* Stock Market Ticker Marquee */
+  .ticker-wrap {
+    width: 100%;
+    overflow: hidden;
+    background: #18181b;
+    border-bottom: 2px solid #27272a;
+    padding: 8px 0;
+    white-space: nowrap;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+  }
+  .ticker-move {
+    display: inline-block;
+    padding-left: 100%;
+    animation: tickerAnim 35s linear infinite;
+  }
+  .ticker-move:hover { animation-play-state: paused; }
+  @keyframes tickerAnim {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-100%, 0, 0); }
+  }
+  .ticker-item {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 40px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  /* Station Main Board */
+  .station-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+  }
+
+  /* Table Style: Split-Flap Departure Board */
+  .station-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+  }
+  .station-table th {
+    background: #111827;
+    color: #9ca3af;
+    text-align: left;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 12px 14px;
+    border-bottom: 2px solid #374151;
+  }
+  .station-table td {
+    padding: 14px;
+    border-bottom: 1px solid #1f2937;
+    font-size: 13px;
+    background: #090d16;
+  }
+  .station-table tr:hover td { background: #131b2e; }
+
+  .station-dest { font-size: 16px; font-weight: 800; color: #fff; letter-spacing: 0.5px; }
+  .station-arch { font-size: 11px; color: #9ca3af; margin-top: 2px; }
+  .station-gate-pill { font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px; display: inline-block; }
+  .station-status-text { font-size: 13px; font-weight: 900; letter-spacing: 0.8px; text-transform: uppercase; }
+
+  /* Spotlight Carousel View (Single Big Card Rotating) */
+  #spotlightModeContainer {
+    display: none;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .spotlight-card {
+    background: #111827;
+    border: 2px solid #374151;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 900px;
+    padding: 32px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    position: relative;
+  }
+  .spotlight-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+  .spotlight-client { font-size: 32px; font-weight: 900; color: #fff; letter-spacing: -0.5px; }
+  .spotlight-arch { font-size: 16px; color: #9ca3af; margin-top: 4px; }
+  .spotlight-stage { font-size: 18px; font-weight: 900; padding: 8px 16px; border-radius: 6px; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; display: inline-block; }
+  .spotlight-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 20px; }
+  .spotlight-tile { background: #1f2937; border-radius: 8px; padding: 14px; border: 1px solid #374151; }
+  .spotlight-tile-title { font-size: 11px; text-transform: uppercase; color: #9ca3af; font-weight: 700; margin-bottom: 4px; }
+  .spotlight-tile-val { font-size: 14px; font-weight: 700; color: #fff; }
+</style>
+</head>
+<body>
+
+<!-- ==============================================
+     1. NORMAL MANAGER VIEW
+============================================== -->
+<div id="managerView">
+  <div class="top-bar">
+    <div class="branding">
+      <h1>Glass & Aluminium Production OS</h1>
+      <p>Workshop Process Engine & Centralized Live Board</p>
+    </div>
+    <div class="top-actions">
+      <button class="btn btn-station-launch" onclick="launchStationDisplay()">📺 Station Display Screen</button>
+      <button class="btn btn-secondary" onclick="exportDataJSON()">Export Backup</button>
+      <button class="btn btn-secondary" onclick="document.getElementById('importFileInput').click()">Import Backup</button>
+      <input type="file" id="importFileInput" style="display:none" accept=".json" onchange="importDataJSON(event)">
+      <button class="btn btn-primary" onclick="openCreateModal()">+ Add New Site</button>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-chip active" onclick="applyFilter('all', this)">All Projects</button>
+    <button class="filter-chip" onclick="applyFilter('stagnant', this)">⚠️ Stagnant (2+ Days Idle)</button>
+    <button class="filter-chip" onclick="applyFilter('vendor', this)">🟡 Waiting on Vendors / Sandblaster</button>
+    <button class="filter-chip" onclick="applyFilter('delayed', this)">🔴 Site Gate / Measurements Pending</button>
+    <button class="filter-chip" onclick="applyFilter('processing', this)">🔵 In Shop Fabrication</button>
+    <button class="filter-chip" onclick="applyFilter('ready', this)">🟢 100% Ready for Site</button>
+  </div>
+
+  <div class="sites-grid" id="sitesGridContainer"></div>
+</div>
+
+<!-- ==============================================
+     2. STATION / RAILWAY DEPARTURE SCREEN
+============================================== -->
+<div id="stationView">
+  <!-- Top Header -->
+  <div class="station-header">
+    <div class="station-brand">
+      <div>
+        <div class="station-title">Live Workshop Operations Board</div>
+        <div class="station-sub">Centralized Real-Time Site & Fabrication Schedule</div>
+      </div>
+    </div>
+
+    <div class="station-clock-box">
+      <div class="station-clock" id="stationClockDisplay">00:00:00</div>
+      <div class="station-controls">
+        <button class="btn btn-secondary" id="toggleViewModeBtn" onclick="toggleStationLayoutMode()" style="background:#1f2937; color:#fff; border-color:#374151;">🔄 Switch to Carousel Mode</button>
+        <button class="btn btn-secondary" onclick="toggleFullScreen()" style="background:#1f2937; color:#fff; border-color:#374151;">⛶ Fullscreen</button>
+        <button class="btn btn-danger" onclick="closeStationDisplay()">✕ Exit Station</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stock Market Running Ticker -->
+  <div class="ticker-wrap">
+    <div class="ticker-move" id="stationTickerContent">
+      <!-- Injected by JavaScript -->
+    </div>
+  </div>
+
+  <!-- Board Body (Table Departures Mode) -->
+  <div class="station-body" id="stationTableWrapper">
+    <table class="station-table">
+      <thead>
+        <tr>
+          <th style="width: 24%;">Project / Destination</th>
+          <th style="width: 18%;">Architect / Interior</th>
+          <th style="width: 14%;">Departure / Target</th>
+          <th style="width: 16%;">Gateways</th>
+          <th style="width: 28%;">Current Depot Status / Bottleneck</th>
+        </tr>
+      </thead>
+      <tbody id="stationTableBody">
+        <!-- Rendered by JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Spotlight Carousel Mode (Auto-Rotating Fullscreen Kiosk) -->
+  <div id="spotlightModeContainer">
+    <div class="spotlight-card" id="spotlightCardContent">
+      <!-- Rotates through projects -->
+    </div>
+  </div>
+</div>
+
+<!-- ==============================================
+     3. MODAL DEEP-DIVE EDITOR
+============================================== -->
+<div class="modal-overlay" id="editorModal">
+  <div class="modal-window">
+    <div class="modal-header">
+      <h2 id="modalSiteTitle">Project Configuration</h2>
+      <button class="btn btn-secondary" onclick="closeEditorModal()" style="padding: 3px 8px;">✕</button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="module-card" style="background: #f8fafc;">
+        <div class="form-grid-3">
+          <div class="field-group">
+            <label>Client / Site Name</label>
+            <input type="text" id="inp_clientName" placeholder="e.g. Bunglow 42 - Mr. Sanghavi">
+          </div>
+          <div class="field-group">
+            <label>Architect / Interior Designer</label>
+            <input type="text" id="inp_archName" placeholder="e.g. Design Atelier">
+          </div>
+          <div class="field-group">
+            <label>Target Delivery / Install Date</label>
+            <input type="date" id="inp_targetDate">
+          </div>
+
+          <div class="field-group" style="grid-column: span 3;">
+            <label>Pre-Requisite Site Gateways</label>
+            <div style="display: flex; gap: 24px; align-items: center; margin-top: 6px;">
+              <label style="font-size: 13px; font-weight: 600; cursor: pointer; text-transform: none;">
+                <input type="checkbox" id="inp_gateApproval" onchange="refreshModalAutoStatus()"> Drawings & Selections Approved
+              </label>
+              <label style="font-size: 13px; font-weight: 600; cursor: pointer; text-transform: none;">
+                <input type="checkbox" id="inp_gateMeasurements" onchange="refreshModalAutoStatus()"> Final Site Measurements Locked
+              </label>
+            </div>
+          </div>
+
+          <div class="live-calc-box">
+            <div>
+              <div style="font-size: 10px; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">Current Auto-Calculated Stage</div>
+              <div id="modalAutoStageText" style="font-size: 14px; font-weight: 700; margin-top: 2px;">Analyzing...</div>
+            </div>
+            <div id="modalAutoStagePill" class="status-pill badge-neutral">Auto-Calculated</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="module-card">
+        <div class="module-title">1. Profile Shutters (Multi-Room / Multi-Glass)</div>
+        <div id="profileShuttersContainer"></div>
+        <button class="btn btn-add" onclick="addProfileShutterRow()">+ Add Profile Shutter Row</button>
+      </div>
+
+      <div class="module-card">
+        <div class="module-title">2. Slimline Profile Partitions (Dual Guardrail Enabled)</div>
+        <div id="slimlineContainer"></div>
+        <button class="btn btn-add" onclick="addSlimlineRow()">+ Add Slimline Partition Row</button>
+      </div>
+
+      <div class="module-card">
+        <div class="module-title">3. Mirrors Matrix (Double Freeze: Frameless & Non-LED Controlled)</div>
+        <div id="mirrorsContainer"></div>
+        <button class="btn btn-add" onclick="addMirrorRow()">+ Add Mirror Row</button>
+      </div>
+
+      <div class="module-card">
+        <div class="module-title">4. Toughened Glass Partitions & Shower Enclosures</div>
+        <div id="toughenedContainer"></div>
+        <button class="btn btn-add" onclick="addToughenedRow()">+ Add Toughened Partition / Shower Row</button>
+      </div>
+
+      <div class="module-card">
+        <div class="module-title">5. Glass Shelves (Up to 8mm In-Stock vs 12mm Plant Order)</div>
+        <div id="shelvesContainer"></div>
+        <button class="btn btn-add" onclick="addShelfRow()">+ Add Shelf Row</button>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-danger" onclick="deleteCurrentSite()">Delete Site</button>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-secondary" onclick="closeEditorModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveActiveSite()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let projectSites = JSON.parse(localStorage.getItem('glass_ops_tracker_v7') || '[]');
+let activeSiteId = null;
+let currentFilter = 'all';
+let isSpotlightMode = false;
+let spotlightIndex = 0;
+let spotlightInterval = null;
+
+// Initial sample seed
+if (projectSites.length === 0) {
+  projectSites = [
+    {
+      id: 1728000001,
+      client: "Bunglow 42 - Mr. Sanghavi",
+      arch: "Design Atelier",
+      targetDate: "2026-10-15",
+      approved: true,
+      measured: true,
+      updatedAt: Date.now() - (3 * 24 * 60 * 60 * 1000),
+      shutters: [
+        { room: "Master Wardrobe", profile: "20mm Slim Black", profileStatus: "Mitre Cutting", glass: "Fluted Glass", glassStatus: "In Cutting" },
+        { room: "Dresser Unit", profile: "Gola Champagne Gold", profileStatus: "Ordered", glass: "Bronze Mirror", glassStatus: "Available In Stock" }
+      ],
+      slimline: [
+        { location: "Foyer Slimline Sliding", profile: "Slim Partition Black", profileStatus: "Arrived", glass: "Backpainted Glass", glassStatus: "Sample Sent to Arch" }
+      ],
+      mirrors: [
+        { room: "Master Vanity", type: "Framed + LED", glassType: "Bronze Mirror", glassStatus: "In Edge Polishing", frameStatus: "Mitre / Assembly", frostStatus: "At Sandblaster", electricStatus: "Drivers / Strips in Shop" },
+        { room: "Powder Room", type: "Frameless (No LED)", glassType: "Clear Mirror", glassStatus: "Ready for Dispatch", frameStatus: "N/A (Frameless)", frostStatus: "Frosting N/A", electricStatus: "N/A (No LED)" }
+      ],
+      toughened: [
+        { location: "Master Shower Enclosure", glassSpec: "10mm Toughened Clear", furnaceStatus: "PO at Plant", hwSpec: "Matt Black PVD", hwStatus: "Procurement Ordered" }
+      ],
+      shelves: [
+        { location: "Living Bar Niche", thickness: "12mm Toughened", status: "Plant Order Placed" }
+      ]
+    },
+    {
+      id: 1728000002,
+      client: "Villa 304 - Rajesh Patel",
+      arch: "Studio Vista",
+      targetDate: "2026-10-09",
+      approved: true,
+      measured: false,
+      updatedAt: Date.now() - (1 * 24 * 60 * 60 * 1000),
+      shutters: [
+        { room: "Walk-in Wardrobe", profile: "Slimline 45", profileStatus: "Available In Shop", glass: "Grey Tinted", glassStatus: "Available In Stock" }
+      ],
+      slimline: [],
+      mirrors: [
+        { room: "Guest Bath", type: "Frameless + LED", glassType: "Clear Mirror", glassStatus: "In Edge Polishing", frameStatus: "N/A (Frameless)", frostStatus: "At Sandblaster", electricStatus: "Drivers / Strips in Shop" }
+      ],
+      toughened: [],
+      shelves: []
+    }
+  ];
+  saveToStorage();
+}
+
+function saveToStorage() {
+  localStorage.setItem('glass_ops_tracker_v7', JSON.stringify(projectSites));
+}
+
+function exportDataJSON() {
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(projectSites, null, 2));
+  const dlAnchor = document.createElement('a');
+  dlAnchor.setAttribute("href", dataStr);
+  dlAnchor.setAttribute("download", `Glass_Operations_Tracker_v7_${new Date().toISOString().slice(0,10)}.json`);
+  document.body.appendChild(dlAnchor);
+  dlAnchor.click();
+  dlAnchor.remove();
+}
+
+function importDataJSON(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      projectSites = JSON.parse(e.target.result);
+      saveToStorage();
+      renderDashboard();
+      alert('Data restored successfully!');
+    } catch (err) {
+      alert('Invalid JSON file format.');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function applyFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  renderDashboard();
+}
+
+// ==========================================
+// AUTO-STAGE ENGINE
+// ==========================================
+function computeAutoStage(site) {
+  if (!site.measured) {
+    return { stageKey: 'delayed', label: '🔴 Gate: Final Measurements Pending', colorClass: 'badge-delayed', borderClass: 'border-delayed', stationBadge: 'color: #f87171', bottleneck: 'Laser measurements not yet locked' };
+  }
+  if (!site.approved) {
+    return { stageKey: 'delayed', label: '🔴 Gate: Drawings Awaiting Approval', colorClass: 'badge-delayed', borderClass: 'border-delayed', stationBadge: 'color: #f87171', bottleneck: 'Architect drawing sign-off pending' };
+  }
+
+  const vendorBottlenecks = [];
+  const inProcessingItems = [];
+  let totalSubComponents = 0;
+  let readySubComponents = 0;
+
+  (site.shutters || []).forEach(sh => {
+    totalSubComponents++;
+    if (sh.profileStatus === 'Ready for Dispatch') readySubComponents++;
+    else if (sh.profileStatus === 'Ordered') vendorBottlenecks.push(`Profile Order: ${sh.room}`);
+    else inProcessingItems.push(`Shutter Profile: ${sh.room}`);
+
+    totalSubComponents++;
+    if (sh.glassStatus === 'Ready for Dispatch') readySubComponents++;
+    else if (sh.glassStatus === 'Ordered') vendorBottlenecks.push(`Glass Order: ${sh.room}`);
+    else if (sh.glassStatus === 'Sample Sent to Arch') vendorBottlenecks.push(`Sample at Arch: ${sh.room}`);
+    else inProcessingItems.push(`Shutter Glass: ${sh.room}`);
+  });
+
+  (site.slimline || []).forEach(sl => {
+    totalSubComponents++;
+    if (sl.profileStatus === 'Ready for Dispatch') readySubComponents++;
+    else if (sl.profileStatus === 'Ordered') vendorBottlenecks.push(`Slimline Frame: ${sl.location}`);
+    else inProcessingItems.push(`Slimline Frame: ${sl.location}`);
+
+    totalSubComponents++;
+    if (sl.glassStatus === 'Ready for Dispatch') readySubComponents++;
+    else if (sl.glassStatus === 'Ordered') vendorBottlenecks.push(`Slimline Glass: ${sl.location}`);
+    else if (sl.glassStatus === 'Sample Sent to Arch') vendorBottlenecks.push(`Sample at Arch: ${sl.location}`);
+    else inProcessingItems.push(`Slimline Glass: ${sl.location}`);
+  });
+
+  (site.mirrors || []).forEach(m => {
+    totalSubComponents++;
+    if (m.glassStatus === 'Ready for Dispatch') readySubComponents++;
+    else if (m.glassStatus === 'Ordered') vendorBottlenecks.push(`Mirror Glass: ${m.room}`);
+    else inProcessingItems.push(`Mirror Glass: ${m.room}`);
+
+    if (m.frostStatus === 'At Sandblaster') {
+      totalSubComponents++;
+      vendorBottlenecks.push(`Sandblaster: ${m.room}`);
+    } else if (m.frostStatus === 'Received Back') {
+      totalSubComponents++;
+      readySubComponents++;
+    }
+
+    if (m.frameStatus && m.frameStatus !== 'N/A (Frameless)') {
+      totalSubComponents++;
+      if (m.frameStatus === 'Ready for Dispatch') readySubComponents++;
+      else if (m.frameStatus === 'Ordered') vendorBottlenecks.push(`Mirror Frame: ${m.room}`);
+      else inProcessingItems.push(`Mirror Frame: ${m.room}`);
+    }
+
+    if (m.electricStatus && m.electricStatus !== 'N/A (No LED)') {
+      totalSubComponents++;
+      if (m.electricStatus === 'LED Installation Done & Tested OK') readySubComponents++;
+      else inProcessingItems.push(`LED Assembly: ${m.room}`);
+    }
+  });
+
+  (site.toughened || []).forEach(tg => {
+    totalSubComponents++;
+    if (tg.furnaceStatus === 'Dispatched to Site') readySubComponents++;
+    else if (tg.furnaceStatus === 'PO at Plant') vendorBottlenecks.push(`Tempering Furnace: ${tg.location}`);
+    else if (tg.furnaceStatus === 'Cutouts Freeze') vendorBottlenecks.push(`Cutouts Freeze: ${tg.location}`);
+    else inProcessingItems.push(`Glass at Shop: ${tg.location}`);
+
+    totalSubComponents++;
+    if (tg.hwStatus === 'Received at Shop') readySubComponents++;
+    else if (tg.hwStatus === 'Procurement Ordered') vendorBottlenecks.push(`Hardware Order: ${tg.location}`);
+    else readySubComponents++;
+  });
+
+  (site.shelves || []).forEach(sh => {
+    totalSubComponents++;
+    if (sh.status === 'Ready for Site') readySubComponents++;
+    else if (sh.status === 'Plant Order Placed') vendorBottlenecks.push(`12mm Plant Order: ${sh.location}`);
+    else inProcessingItems.push(`Shelves Polishing: ${sh.location}`);
+  });
+
+  if (totalSubComponents === 0) {
+    return { stageKey: 'processing', label: '⚪ Scope Definition Pending', colorClass: 'badge-neutral', borderClass: '', stationBadge: 'color: #9ca3af', bottleneck: 'No scopes added yet' };
+  }
+
+  if (readySubComponents === totalSubComponents) {
+    return { stageKey: 'ready', label: '🟢 100% Ready for Site Installation', colorClass: 'badge-ready', borderClass: 'border-ready', stationBadge: 'color: #34d399', bottleneck: 'All components assembled and ready' };
+  }
+
+  if (vendorBottlenecks.length > 0) {
+    return {
+      stageKey: 'vendor',
+      label: `🟡 Awaiting External Dependencies (${vendorBottlenecks.length})`,
+      colorClass: 'badge-vendor',
+      borderClass: 'border-vendor',
+      stationBadge: 'color: #fbbf24',
+      bottleneck: vendorBottlenecks.slice(0, 2).join(' • ') + (vendorBottlenecks.length > 2 ? ` +${vendorBottlenecks.length - 2} more` : '')
+    };
+  }
+
+  return {
+    stageKey: 'processing',
+    label: `🔵 In Shop Fabrication (${inProcessingItems.length} active)`,
+    colorClass: 'badge-processing',
+    borderClass: 'border-processing',
+    stationBadge: 'color: #60a5fa',
+    bottleneck: inProcessingItems.slice(0, 2).join(' • ')
+  };
+}
+
+function getStatusClass(statusText) {
+  if (!statusText) return 'badge-neutral';
+  const s = statusText.toLowerCase();
+  if (s.includes('ready') || s.includes('assembled') || s.includes('tested ok') || s.includes('completed')) return 'badge-ready';
+  if (s.includes('sample sent') || s.includes('sandblaster') || s.includes('plant') || s.includes('vendor') || s.includes('ordered')) return 'badge-vendor';
+  if (s.includes('sample approved') || s.includes('cutting') || s.includes('polishing') || s.includes('colouring') || s.includes('wiring') || s.includes('fabrication')) return 'badge-processing';
+  if (s.includes('delayed') || s.includes('freeze') || s.includes('pending')) return 'badge-delayed';
+  return 'badge-neutral';
+}
+
+function calculateUrgency(targetDate) {
+  if (!targetDate) return { text: "No Target Date", badgeClass: "badge-neutral", stationClass: "color: #9ca3af" };
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const target = new Date(targetDate);
+  target.setHours(0,0,0,0);
+  const diffDays = Math.ceil((target - today) / (1000 * 60 * 60 * 24));
+
+  if (diffDays < 0) return { text: `Overdue by ${Math.abs(diffDays)}d`, badgeClass: "badge-delayed", stationClass: "color: #f87171" };
+  if (diffDays === 0) return { text: "Due Today", badgeClass: "badge-delayed", stationClass: "color: #f87171" };
+  if (diffDays <= 3) return { text: `${diffDays} Days Left`, badgeClass: "badge-vendor", stationClass: "color: #fbbf24" };
+  return { text: `Due in ${diffDays}d`, badgeClass: "badge-ready", stationClass: "color: #34d399" };
+}
+
+function getStagnantDays(site) {
+  const lastTime = site.updatedAt || site.id;
+  return Math.floor((Date.now() - lastTime) / (1000 * 60 * 60 * 24));
+}
+
+// Render Manager Dashboard
+function renderDashboard() {
+  const container = document.getElementById('sitesGridContainer');
+  let filtered = projectSites;
+  
+  if (currentFilter === 'stagnant') {
+    filtered = projectSites.filter(s => computeAutoStage(s).stageKey !== 'ready' && getStagnantDays(s) >= 2);
+  } else if (currentFilter !== 'all') {
+    filtered = projectSites.filter(s => computeAutoStage(s).stageKey === currentFilter);
+  }
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<div style="grid-column: 1/-1; padding: 40px; text-align: center; background: #fff; border-radius: 8px; color: var(--text-muted);">No sites matching this filter.</div>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map(site => {
+    const urgency = calculateUrgency(site.targetDate);
+    const stagnantDays = getStagnantDays(site);
+    const autoStage = computeAutoStage(site);
+    const isStagnant = (autoStage.stageKey !== 'ready' && stagnantDays >= 2);
+
+    let totalItems = 0;
+    let readyItems = 0;
+    const microCards = [];
+
+    (site.shutters || []).forEach(sh => {
+      totalItems++;
+      if (sh.profileStatus === 'Ready for Dispatch' && sh.glassStatus === 'Ready for Dispatch') readyItems++;
+      microCards.push(`
+        <div class="item-micro-card">
+          <div class="item-micro-header"><span>Shutter: ${sh.room || 'Room'}</span></div>
+          <div class="item-badge-flex">
+            <span class="status-pill ${getStatusClass(sh.profileStatus)}">Prof: ${sh.profileStatus}</span>
+            <span class="status-pill ${getStatusClass(sh.glassStatus)}">Glass: ${sh.glassStatus}</span>
+          </div>
+        </div>
+      `);
+    });
+
+    (site.slimline || []).forEach(sl => {
+      totalItems++;
+      if (sl.profileStatus === 'Ready for Dispatch' && sl.glassStatus === 'Ready for Dispatch') readyItems++;
+      microCards.push(`
+        <div class="item-micro-card">
+          <div class="item-micro-header"><span>Slimline: ${sl.location || 'Area'}</span></div>
+          <div class="item-badge-flex">
+            <span class="status-pill ${getStatusClass(sl.profileStatus)}">Prof: ${sl.profileStatus}</span>
+            <span class="status-pill ${getStatusClass(sl.glassStatus)}">Glass: ${sl.glassStatus}</span>
+          </div>
+        </div>
+      `);
+    });
+
+    (site.mirrors || []).forEach(m => {
+      totalItems++;
+      if (m.glassStatus === 'Ready for Dispatch' && (m.frostStatus === 'Received Back' || m.frostStatus === 'Frosting N/A')) readyItems++;
+      microCards.push(`
+        <div class="item-micro-card">
+          <div class="item-micro-header"><span>Mirror: ${m.room || 'Vanity'} (${m.glassType || 'Mirror'})</span></div>
+          <div class="item-badge-flex">
+            <span class="status-pill ${getStatusClass(m.glassStatus)}">Glass: ${m.glassStatus}</span>
+            ${m.frostStatus !== 'Frosting N/A' ? `<span class="status-pill ${getStatusClass(m.frostStatus)}">Frost: ${m.frostStatus}</span>` : ''}
+            ${m.frameStatus !== 'N/A (Frameless)' ? `<span class="status-pill ${getStatusClass(m.frameStatus)}">Frame: ${m.frameStatus}</span>` : ''}
+            ${m.electricStatus !== 'N/A (No LED)' ? `<span class="status-pill ${getStatusClass(m.electricStatus)}">LED: ${m.electricStatus}</span>` : ''}
+          </div>
+        </div>
+      `);
+    });
+
+    (site.toughened || []).forEach(tg => {
+      totalItems++;
+      if (tg.furnaceStatus === 'Dispatched to Site' && tg.hwStatus === 'Received at Shop') readyItems++;
+      microCards.push(`
+        <div class="item-micro-card">
+          <div class="item-micro-header"><span>Toughened: ${tg.location || 'Partition'}</span></div>
+          <div class="item-badge-flex">
+            <span class="status-pill ${getStatusClass(tg.furnaceStatus)}">Furnace: ${tg.furnaceStatus}</span>
+            <span class="status-pill ${getStatusClass(tg.hwStatus)}">HW: ${tg.hwStatus}</span>
+          </div>
+        </div>
+      `);
+    });
+
+    (site.shelves || []).forEach(sh => {
+      totalItems++;
+      if (sh.status === 'Ready for Site') readyItems++;
+      microCards.push(`
+        <div class="item-micro-card">
+          <div class="item-micro-header"><span>Shelves: ${sh.location || 'Niche'}</span></div>
+          <div class="item-badge-flex">
+            <span class="status-pill ${getStatusClass(sh.status)}">${sh.status}</span>
+          </div>
+        </div>
+      `);
+    });
+
+    const pct = totalItems > 0 ? Math.round((readyItems / totalItems) * 100) : 0;
+
+    return `
+      <div class="site-card ${autoStage.borderClass}" onclick="openEditorModal(${site.id})">
+        <div class="card-top">
+          <div>
+            <div class="card-client">${site.client}</div>
+            <div class="card-arch">${site.arch ? 'Arch: ' + site.arch : 'Direct Client'}</div>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
+            <span class="status-pill ${urgency.badgeClass}">${urgency.text}</span>
+            ${isStagnant ? `<span class="status-pill badge-delayed" title="No updates in ${stagnantDays} days!">⚠️ Idle ${stagnantDays}d</span>` : ''}
+          </div>
+        </div>
+
+        <div class="auto-stage-badge ${autoStage.colorClass}">
+          ${autoStage.label}
+        </div>
+        <div style="font-size:10px; color:var(--text-muted); margin-bottom:8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+          <strong>Detail:</strong> ${autoStage.bottleneck}
+        </div>
+
+        <div class="gates-row">
+          <div class="gate-indicator ${site.approved ? 'gate-ok' : 'gate-pending'}">
+            ${site.approved ? '✓ Specs Approved' : '○ Approval Pending'}
+          </div>
+          <div class="gate-indicator ${site.measured ? 'gate-ok' : 'gate-pending'}">
+            ${site.measured ? '✓ Measurements Locked' : '○ Measurements Pending'}
+          </div>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width: ${pct}%"></div>
+          </div>
+          <div class="progress-meta">
+            <span>Overall Readiness</span>
+            <span>${readyItems} / ${totalItems} Items Ready (${pct}%)</span>
+          </div>
+        </div>
+
+        <div class="pipeline-card-list">
+          ${microCards.slice(0, 4).join('')}
+          ${microCards.length > 4 ? `<div style="font-size:10px; color:var(--text-muted); text-align:right;">+ ${microCards.length - 4} more items...</div>` : ''}
+          ${microCards.length === 0 ? '<div style="color:var(--text-muted); font-size:11px; padding: 4px;">Tap to configure scopes...</div>' : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ========================================================
+// STATION SCREEN DISPLAY LOGIC (SPLIT-FLAP / CAROUSEL)
+// ========================================================
+function launchStationDisplay() {
+  document.getElementById('stationView').classList.add('active');
+  renderStationBoard();
+  startStationClock();
+}
+
+function closeStationDisplay() {
+  document.getElementById('stationView').classList.remove('active');
+  if (spotlightInterval) clearInterval(spotlightInterval);
+}
+
+function startStationClock() {
+  function updateTime() {
+    const now = new Date();
+    const timeStr = now.toTimeString().split(' ')[0];
+    const clockEl = document.getElementById('stationClockDisplay');
+    if (clockEl) clockEl.innerText = timeStr;
+  }
+  updateTime();
+  setInterval(updateTime, 1000);
+}
+
+function toggleFullScreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else {
+    if (document.exitFullscreen) document.exitFullscreen();
+  }
+}
+
+function toggleStationLayoutMode() {
+  isSpotlightMode = !isSpotlightMode;
+  const btn = document.getElementById('toggleViewModeBtn');
+  const tableWrap = document.getElementById('stationTableWrapper');
+  const spotWrap = document.getElementById('spotlightModeContainer');
+
+  if (isSpotlightMode) {
+    btn.innerText = "📋 Switch to Full Departure Table";
+    tableWrap.style.display = 'none';
+    spotWrap.style.display = 'flex';
+    spotlightIndex = 0;
+    renderSpotlightCard();
+    if (spotlightInterval) clearInterval(spotlightInterval);
+    spotlightInterval = setInterval(() => {
+      spotlightIndex = (spotlightIndex + 1) % projectSites.length;
+      renderSpotlightCard();
+    }, 8000); // Cycles every 8 seconds
+  } else {
+    btn.innerText = "🔄 Switch to Carousel Mode";
+    tableWrap.style.display = 'block';
+    spotWrap.style.display = 'none';
+    if (spotlightInterval) clearInterval(spotlightInterval);
+  }
+}
+
+function renderStationBoard() {
+  // 1. Build Running Ticker Content
+  const tickerContainer = document.getElementById('stationTickerContent');
+  const tickerItems = [];
+
+  projectSites.forEach(s => {
+    const stage = computeAutoStage(s);
+    const urg = calculateUrgency(s.targetDate);
+    if (!s.measured) {
+      tickerItems.push(`<span class="ticker-item" style="color:#f87171;">🔴 [CRITICAL GATE] ${s.client}: Measurements Pending!</span>`);
+    } else if (stage.stageKey === 'vendor') {
+      tickerItems.push(`<span class="ticker-item" style="color:#fbbf24;">🟡 [SUPPLY BOTTLENECK] ${s.client}: ${stage.bottleneck}</span>`);
+    } else if (stage.stageKey === 'ready') {
+      tickerItems.push(`<span class="ticker-item" style="color:#34d399;">🟢 [100% READY] ${s.client}: Ready for Delivery / Install</span>`);
+    } else {
+      tickerItems.push(`<span class="ticker-item" style="color:#60a5fa;">🔵 [FABRICATION] ${s.client}: ${stage.bottleneck} (${urg.text})</span>`);
+    }
+  });
+
+  tickerContainer.innerHTML = tickerItems.join(' • ') + ' • ' + tickerItems.join(' • ');
+
+  // 2. Build Departure Board Table
+  const tableBody = document.getElementById('stationTableBody');
+  tableBody.innerHTML = projectSites.map(s => {
+    const auto = computeAutoStage(s);
+    const urg = calculateUrgency(s.targetDate);
+    const stagnant = getStagnantDays(s);
+
+    return `
+      <tr>
+        <td>
+          <div class="station-dest">${s.client}</div>
+          ${stagnant >= 2 ? `<div style="color:#f87171; font-size:10px; font-weight:700; margin-top:2px;">⚠️ IDLE ${stagnant} DAYS WITHOUT UPDATE</div>` : ''}
+        </td>
+        <td>
+          <div class="station-arch">${s.arch || 'Direct Client'}</div>
+        </td>
+        <td>
+          <div style="${urg.stationClass}; font-weight:800; font-size:14px;">${urg.text}</div>
+          <div style="font-size:10px; color:#6b7280;">Target: ${s.targetDate || 'None'}</div>
+        </td>
+        <td>
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <span class="station-gate-pill" style="${s.approved ? 'background:#064e3b; color:#34d399;' : 'background:#450a0a; color:#f87171;'}">
+              ${s.approved ? '✓ Approved' : '○ Pending Approval'}
+            </span>
+            <span class="station-gate-pill" style="${s.measured ? 'background:#064e3b; color:#34d399;' : 'background:#450a0a; color:#f87171;'}">
+              ${s.measured ? '✓ Measured' : '○ Pending Measure'}
+            </span>
+          </div>
+        </td>
+        <td>
+          <div class="station-status-text" style="${auto.stationBadge}">${auto.label}</div>
+          <div style="color:#9ca3af; font-size:11px; margin-top:4px;">
+            <strong style="color:#cbd5e1;">Blocker / Action:</strong> ${auto.bottleneck}
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+// Spotlight Kiosk Card
+function renderSpotlightCard() {
+  if (projectSites.length === 0) return;
+  const s = projectSites[spotlightIndex];
+  const auto = computeAutoStage(s);
+  const urg = calculateUrgency(s.targetDate);
+  const card = document.getElementById('spotlightCardContent');
+
+  card.innerHTML = `
+    <div class="spotlight-header">
+      <div>
+        <div style="font-size:12px; font-weight:800; color:#fbbf24; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:4px;">
+          Active Spotlight Job (${spotlightIndex + 1} of ${projectSites.length})
+        </div>
+        <div class="spotlight-client">${s.client}</div>
+        <div class="spotlight-arch">Architect: <strong>${s.arch || 'Direct'}</strong></div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:20px; font-weight:900; ${urg.stationClass}">${urg.text}</div>
+        <div style="font-size:11px; color:#9ca3af;">Target: ${s.targetDate || 'No Date'}</div>
+      </div>
+    </div>
+
+    <div class="spotlight-stage" style="${auto.stationBadge}; background:#1f2937; border: 1px solid #374151;">
+      ${auto.label}
+    </div>
+
+    <div style="font-size:15px; color:#f3f4f6; background:#18181b; padding:12px 16px; border-radius:6px; border-left:4px solid #fbbf24; margin-bottom:20px;">
+      <strong style="color:#fbbf24;">Live Bottleneck / Critical Action:</strong><br>${auto.bottleneck}
+    </div>
+
+    <div class="spotlight-grid">
+      <div class="spotlight-tile">
+        <div class="spotlight-tile-title">Drawings & Approvals</div>
+        <div class="spotlight-tile-val" style="${s.approved ? 'color:#34d399;' : 'color:#f87171;'}">
+          ${s.approved ? '✓ 100% Signed Off' : '○ Drawing Approval Pending'}
+        </div>
+      </div>
+      <div class="spotlight-tile">
+        <div class="spotlight-tile-title">Site Measurements</div>
+        <div class="spotlight-tile-val" style="${s.measured ? 'color:#34d399;' : 'color:#f87171;'}">
+          ${s.measured ? '✓ Laser Measurements Locked' : '○ Physical Measurement Pending'}
+        </div>
+      </div>
+      <div class="spotlight-tile">
+        <div class="spotlight-tile-title">Profile Shutters & Slimline</div>
+        <div class="spotlight-tile-val">${(s.shutters || []).length + (s.slimline || []).length} Units Configured</div>
+      </div>
+      <div class="spotlight-tile">
+        <div class="spotlight-tile-title">Mirrors & LED Matrix</div>
+        <div class="spotlight-tile-val">${(s.mirrors || []).length} Units Open</div>
+      </div>
+    </div>
+  `;
+}
+
+// Modal Form & Live Status Refresh
+function refreshModalAutoStatus() {
+  const tempSite = buildSitePayloadFromForm();
+  const auto = computeAutoStage(tempSite);
+  document.getElementById('modalAutoStageText').innerText = auto.label;
+  const pill = document.getElementById('modalAutoStagePill');
+  pill.className = `status-pill ${auto.colorClass}`;
+  pill.innerText = auto.bottleneck || 'Computed Stage';
+}
+
+function openCreateModal() {
+  activeSiteId = null;
+  document.getElementById('modalSiteTitle').innerText = "Create New Project Card";
+  document.getElementById('inp_clientName').value = '';
+  document.getElementById('inp_archName').value = '';
+  document.getElementById('inp_targetDate').value = '';
+  document.getElementById('inp_gateApproval').checked = false;
+  document.getElementById('inp_gateMeasurements').checked = false;
+
+  document.getElementById('profileShuttersContainer').innerHTML = '';
+  document.getElementById('slimlineContainer').innerHTML = '';
+  document.getElementById('mirrorsContainer').innerHTML = '';
+  document.getElementById('toughenedContainer').innerHTML = '';
+  document.getElementById('shelvesContainer').innerHTML = '';
+
+  refreshModalAutoStatus();
+  document.getElementById('editorModal').classList.add('active');
+}
+
+function openEditorModal(siteId) {
+  activeSiteId = siteId;
+  const site = projectSites.find(s => s.id === siteId);
+  if (!site) return;
+
+  document.getElementById('modalSiteTitle').innerText = `Editing: ${site.client}`;
+  document.getElementById('inp_clientName').value = site.client || '';
+  document.getElementById('inp_archName').value = site.arch || '';
+  document.getElementById('inp_targetDate').value = site.targetDate || '';
+  document.getElementById('inp_gateApproval').checked = !!site.approved;
+  document.getElementById('inp_gateMeasurements').checked = !!site.measured;
+
+  document.getElementById('profileShuttersContainer').innerHTML = '';
+  (site.shutters || []).forEach(row => addProfileShutterRow(row));
+
+  document.getElementById('slimlineContainer').innerHTML = '';
+  (site.slimline || []).forEach(row => addSlimlineRow(row));
+
+  document.getElementById('mirrorsContainer').innerHTML = '';
+  (site.mirrors || []).forEach(row => addMirrorRow(row));
+
+  document.getElementById('toughenedContainer').innerHTML = '';
+  (site.toughened || []).forEach(row => addToughenedRow(row));
+
+  document.getElementById('shelvesContainer').innerHTML = '';
+  (site.shelves || []).forEach(row => addShelfRow(row));
+
+  refreshModalAutoStatus();
+  document.getElementById('editorModal').classList.add('active');
+}
+
+function closeEditorModal() {
+  document.getElementById('editorModal').classList.remove('active');
+}
+
+function getGlassStatusOptionsHTML(selectedVal) {
+  const options = [
+    { val: "Available In Stock", label: "Glass: In Stock" },
+    { val: "Ordered", label: "Glass: Ordered" },
+    { val: "Arrived", label: "Glass: Arrived" },
+    { val: "Sample Sent to Arch", label: "Glass: Sample Sent to Arch" },
+    { val: "Sample Approved", label: "Glass: Sample Approved by Arch" },
+    { val: "In Cutting", label: "Glass: In Cutting" },
+    { val: "In Edge Polishing", label: "Glass: In Edge Polishing" },
+    { val: "In Colouring", label: "Glass: In Colouring / Paint" },
+    { val: "Ready for Dispatch", label: "Glass: Ready for Dispatch" }
+  ];
+  return options.map(o => `<option value="${o.val}" ${selectedVal === o.val ? 'selected' : ''}>${o.label}</option>`).join('');
+}
+
+function checkProfileReadyBeforeGlassProcessing(glassSelectElem, profileSelectClass) {
+  const newGlassVal = glassSelectElem.value;
+  const isProcessingStatus = (newGlassVal === 'In Cutting' || newGlassVal === 'In Edge Polishing' || newGlassVal === 'In Colouring' || newGlassVal === 'Ready for Dispatch');
+  
+  if (isProcessingStatus) {
+    const row = glassSelectElem.closest('.repeater-row');
+    const profileVal = row.querySelector(profileSelectClass).value;
+    
+    if (profileVal !== 'Ready for Dispatch') {
+      const confirmProceed = confirm(
+        `⚠️ WORKSHOP ALERT:\n\nThe profile is currently marked as: "${profileVal}".\n` +
+        `Standard sequence requires profiles to be assembled/ready before glass sizing and cutting.\n\n` +
+        `Do you want to proceed with cutting/processing glass anyway?`
+      );
+
+      if (!confirmProceed) {
+        glassSelectElem.value = glassSelectElem.getAttribute('data-prev') || 'Available In Stock';
+        refreshModalAutoStatus();
+        return;
+      }
+    }
+  }
+  
+  glassSelectElem.setAttribute('data-prev', newGlassVal);
+  refreshModalAutoStatus();
+}
+
+function addProfileShutterRow(data = {}) {
+  const container = document.getElementById('profileShuttersContainer');
+  const div = document.createElement('div');
+  div.className = 'repeater-row row-shutter';
+  const initialGlass = data.glassStatus || 'Available In Stock';
+
+  div.innerHTML = `
+    <input type="text" placeholder="Room (e.g. Master Wardrobe)" value="${data.room || ''}" class="ps_room">
+    <input type="text" placeholder="Profile Section & Finish" value="${data.profile || ''}" class="ps_profile">
+    <select class="ps_profileStatus" onchange="refreshModalAutoStatus()">
+      <option value="Available In Shop" ${data.profileStatus==='Available In Shop'?'selected':''}>Prof: In Shop</option>
+      <option value="Ordered" ${data.profileStatus==='Ordered'?'selected':''}>Prof: Ordered</option>
+      <option value="Arrived" ${data.profileStatus==='Arrived'?'selected':''}>Prof: Arrived</option>
+      <option value="Mitre Cutting" ${data.profileStatus==='Mitre Cutting'?'selected':''}>Prof: Mitre Cutting</option>
+      <option value="Ready for Dispatch" ${data.profileStatus==='Ready for Dispatch'?'selected':''}>Prof: Ready for Dispatch</option>
+    </select>
+    <input type="text" placeholder="Glass Spec (e.g. Fluted / Backpainted)" value="${data.glass || ''}" class="ps_glass">
+    <select class="ps_glassStatus" data-prev="${initialGlass}" onchange="checkProfileReadyBeforeGlassProcessing(this, '.ps_profileStatus')">
+      ${getGlassStatusOptionsHTML(initialGlass)}
+    </select>
+    <button class="btn-remove-row" onclick="this.parentElement.remove(); refreshModalAutoStatus();">✕</button>
+  `;
+  container.appendChild(div);
+  refreshModalAutoStatus();
+}
+
+function addSlimlineRow(data = {}) {
+  const container = document.getElementById('slimlineContainer');
+  const div = document.createElement('div');
+  div.className = 'repeater-row row-slimline';
+  const initialGlass = data.glassStatus || 'Available In Stock';
+
+  div.innerHTML = `
+    <input type="text" placeholder="Location (e.g. Living Partition)" value="${data.location || ''}" class="sl_loc">
+    <input type="text" placeholder="Slimline Finish & Section" value="${data.profile || ''}" class="sl_profile">
+    <select class="sl_profileStatus" onchange="refreshModalAutoStatus()">
+      <option value="Available In Shop" ${data.profileStatus==='Available In Shop'?'selected':''}>Prof: In Shop</option>
+      <option value="Ordered" ${data.profileStatus==='Ordered'?'selected':''}>Prof: Ordered</option>
+      <option value="Arrived" ${data.profileStatus==='Arrived'?'selected':''}>Prof: Arrived</option>
+      <option value="Mitre Cutting" ${data.profileStatus==='Mitre Cutting'?'selected':''}>Prof: In Fabrication</option>
+      <option value="Ready for Dispatch" ${data.profileStatus==='Ready for Dispatch'?'selected':''}>Prof: Ready for Dispatch</option>
+    </select>
+    <input type="text" placeholder="Glass Spec (e.g. 8mm Tinted / Fluted)" value="${data.glass || ''}" class="sl_glass">
+    <select class="sl_glassStatus" data-prev="${initialGlass}" onchange="checkProfileReadyBeforeGlassProcessing(this, '.sl_profileStatus')">
+      ${getGlassStatusOptionsHTML(initialGlass)}
+    </select>
+    <button class="btn-remove-row" onclick="this.parentElement.remove(); refreshModalAutoStatus();">✕</button>
+  `;
+  container.appendChild(div);
+  refreshModalAutoStatus();
+}
+
+function handleMirrorTypeChange(selectElem) {
+  const row = selectElem.closest('.repeater-row');
+  const frameSelect = row.querySelector('.m_frameStatus');
+  const frostSelect = row.querySelector('.m_frost');
+  const electricSelect = row.querySelector('.m_electric');
+
+  const selectedType = selectElem.value;
+  const isFrameless = selectedType.startsWith('Frameless');
+  const isNoLED = selectedType.includes('No LED');
+
+  if (isFrameless) {
+    frameSelect.value = 'N/A (Frameless)';
+    frameSelect.disabled = true;
+    frameSelect.style.backgroundColor = '#e2e8f0';
+    frameSelect.style.color = '#94a3b8';
+    frameSelect.style.cursor = 'not-allowed';
+  } else {
+    frameSelect.disabled = false;
+    frameSelect.style.backgroundColor = '#ffffff';
+    frameSelect.style.color = 'inherit';
+    frameSelect.style.cursor = 'default';
+    if (frameSelect.value === 'N/A (Frameless)') frameSelect.value = 'In Shop';
+  }
+
+  if (isNoLED) {
+    frostSelect.value = 'Frosting N/A';
+    frostSelect.disabled = true;
+    frostSelect.style.backgroundColor = '#e2e8f0';
+    frostSelect.style.color = '#94a3b8';
+    frostSelect.style.cursor = 'not-allowed';
+
+    electricSelect.value = 'N/A (No LED)';
+    electricSelect.disabled = true;
+    electricSelect.style.backgroundColor = '#e2e8f0';
+    electricSelect.style.color = '#94a3b8';
+    electricSelect.style.cursor = 'not-allowed';
+  } else {
+    frostSelect.disabled = false;
+    frostSelect.style.backgroundColor = '#ffffff';
+    frostSelect.style.color = 'inherit';
+    frostSelect.style.cursor = 'default';
+    if (frostSelect.value === 'Frosting N/A') frostSelect.value = 'At Sandblaster';
+
+    electricSelect.disabled = false;
+    electricSelect.style.backgroundColor = '#ffffff';
+    electricSelect.style.color = 'inherit';
+    electricSelect.style.cursor = 'default';
+    if (electricSelect.value === 'N/A (No LED)') electricSelect.value = 'Drivers / Strips in Shop';
+  }
+
+  refreshModalAutoStatus();
+}
+
+function addMirrorRow(data = {}) {
+  const container = document.getElementById('mirrorsContainer');
+  const div = document.createElement('div');
+  div.className = 'repeater-row row-mirror';
+
+  const mirrorType = data.type || 'Frameless (No LED)';
+  const isFrameless = mirrorType.startsWith('Frameless');
+  const isNoLED = mirrorType.includes('No LED');
+
+  div.innerHTML = `
+    <input type="text" placeholder="Location (e.g. Master Vanity)" value="${data.room || ''}" class="m_room">
+    <select class="m_type" onchange="handleMirrorTypeChange(this)">
+      <option value="Frameless (No LED)" ${mirrorType==='Frameless (No LED)'?'selected':''}>Frameless (No LED)</option>
+      <option value="Frameless + LED" ${mirrorType==='Frameless + LED'?'selected':''}>Frameless + LED</option>
+      <option value="Framed (No LED)" ${mirrorType==='Framed (No LED)'?'selected':''}>Framed (No LED)</option>
+      <option value="Framed + LED" ${mirrorType==='Framed + LED'?'selected':''}>Framed + LED</option>
+    </select>
+    <select class="m_glassType">
+      <option value="Clear Mirror" ${data.glassType==='Clear Mirror'?'selected':''}>Clear Mirror</option>
+      <option value="Bronze Mirror" ${data.glassType==='Bronze Mirror'?'selected':''}>Bronze Mirror</option>
+      <option value="Grey Mirror" ${data.glassType==='Grey Mirror'?'selected':''}>Grey Mirror</option>
+      <option value="Backpainted Glass" ${data.glassType==='Backpainted Glass'?'selected':''}>Backpainted Glass</option>
+      <option value="Antique Mirror" ${data.glassType==='Antique Mirror'?'selected':''}>Antique Mirror</option>
+    </select>
+    <select class="m_glassStatus" onchange="refreshModalAutoStatus()">
+      ${getGlassStatusOptionsHTML(data.glassStatus || 'Available In Stock')}
+    </select>
+    <select class="m_frameStatus" onchange="refreshModalAutoStatus()" ${isFrameless ? 'disabled style="background-color:#e2e8f0; color:#94a3b8; cursor:not-allowed;"' : ''}>
+      <option value="N/A (Frameless)" ${data.frameStatus==='N/A (Frameless)'?'selected':''}>Frame: N/A</option>
+      <option value="In Shop" ${data.frameStatus==='In Shop'?'selected':''}>Frame: In Shop</option>
+      <option value="Ordered" ${data.frameStatus==='Ordered'?'selected':''}>Frame: Ordered</option>
+      <option value="Arrived" ${data.frameStatus==='Arrived'?'selected':''}>Frame: Arrived</option>
+      <option value="Mitre / Assembly" ${data.frameStatus==='Mitre / Assembly'?'selected':''}>Frame: Mitre / Assembly</option>
+      <option value="Ready for Dispatch" ${data.frameStatus==='Ready for Dispatch'?'selected':''}>Frame: Ready</option>
+    </select>
+    <select class="m_frost" onchange="refreshModalAutoStatus()" ${isNoLED ? 'disabled style="background-color:#e2e8f0; color:#94a3b8; cursor:not-allowed;"' : ''}>
+      <option value="Frosting N/A" ${data.frostStatus==='Frosting N/A'?'selected':''}>Frost: N/A</option>
+      <option value="At Sandblaster" ${data.frostStatus==='At Sandblaster'?'selected':''}>Frost: At Sandblaster</option>
+      <option value="Received Back" ${data.frostStatus==='Received Back'?'selected':''}>Frost: Received Back</option>
+    </select>
+    <select class="m_electric" onchange="refreshModalAutoStatus()" ${isNoLED ? 'disabled style="background-color:#e2e8f0; color:#94a3b8; cursor:not-allowed;"' : ''}>
+      <option value="N/A (No LED)" ${data.electricStatus==='N/A (No LED)'?'selected':''}>LED: N/A</option>
+      <option value="Drivers / Strips in Shop" ${data.electricStatus==='Drivers / Strips in Shop'?'selected':''}>LED: Parts Ready</option>
+      <option value="In Wiring & Mounting" ${data.electricStatus==='In Wiring & Mounting'?'selected':''}>LED: In Wiring</option>
+      <option value="LED Installation Done & Tested OK" ${data.electricStatus==='LED Installation Done & Tested OK'?'selected':''}>LED: Done & Tested OK</option>
+    </select>
+    <button class="btn-remove-row" onclick="this.parentElement.remove(); refreshModalAutoStatus();">✕</button>
+  `;
+  container.appendChild(div);
+  refreshModalAutoStatus();
+}
+
+function addToughenedRow(data = {}) {
+  const container = document.getElementById('toughenedContainer');
+  const div = document.createElement('div');
+  div.className = 'repeater-row row-toughened';
+  div.innerHTML = `
+    <input type="text" placeholder="Zone (e.g. Master Shower / Cabin)" value="${data.location || ''}" class="tg_loc">
+    <select class="tg_furnace" onchange="refreshModalAutoStatus()">
+      <option value="Cutouts Freeze" ${data.furnaceStatus==='Cutouts Freeze'?'selected':''}>Plant: Cutouts Freeze</option>
+      <option value="PO at Plant" ${data.furnaceStatus==='PO at Plant'?'selected':''}>Plant: In Production</option>
+      <option value="Arrived at Shop" ${data.furnaceStatus==='Arrived at Shop'?'selected':''}>Plant: Arrived at Shop</option>
+      <option value="Dispatched to Site" ${data.furnaceStatus==='Dispatched to Site'?'selected':''}>Plant: Ready on Site</option>
+    </select>
+    <input type="text" placeholder="Hardware Spec (e.g. Matt Black PVD)" value="${data.hwSpec || ''}" class="tg_hwSpec">
+    <select class="tg_hwStatus" onchange="refreshModalAutoStatus()">
+      <option value="In Stock (SS)" ${data.hwStatus==='In Stock (SS)'?'selected':''}>HW: In Stock</option>
+      <option value="Procurement Ordered" ${data.hwStatus==='Procurement Ordered'?'selected':''}>HW: Special Ordered</option>
+      <option value="Received at Shop" ${data.hwStatus==='Received at Shop'?'selected':''}>HW: Arrived at Shop</option>
+    </select>
+    <button class="btn-remove-row" onclick="this.parentElement.remove(); refreshModalAutoStatus();">✕</button>
+  `;
+  container.appendChild(div);
+  refreshModalAutoStatus();
+}
+
+function addShelfRow(data = {}) {
+  const container = document.getElementById('shelvesContainer');
+  const div = document.createElement('div');
+  div.className = 'repeater-row row-shelf';
+  div.innerHTML = `
+    <input type="text" placeholder="Location (e.g. Shower Niche)" value="${data.location || ''}" class="sh_loc">
+    <select class="sh_thick">
+      <option value="≤8mm Stock Glass" ${data.thickness==='≤8mm Stock Glass'?'selected':''}>≤8mm (Cut from Stock)</option>
+      <option value="12mm Toughened" ${data.thickness==='12mm Toughened'?'selected':''}>12mm (Plant Order)</option>
+    </select>
+    <select class="sh_status" onchange="refreshModalAutoStatus()">
+      <option value="In Polishing" ${data.status==='In Polishing'?'selected':''}>In Polishing</option>
+      <option value="Plant Order Placed" ${data.status==='Plant Order Placed'?'selected':''}>Plant Order Placed</option>
+      <option value="Ready for Site" ${data.status==='Ready for Site'?'selected':''}>Ready for Site</option>
+    </select>
+    <button class="btn-remove-row" onclick="this.parentElement.remove(); refreshModalAutoStatus();">✕</button>
+  `;
+  container.appendChild(div);
+  refreshModalAutoStatus();
+}
+
+function buildSitePayloadFromForm() {
+  const shutters = [];
+  document.querySelectorAll('#profileShuttersContainer .repeater-row').forEach(row => {
+    shutters.push({
+      room: row.querySelector('.ps_room').value,
+      profile: row.querySelector('.ps_profile').value,
+      profileStatus: row.querySelector('.ps_profileStatus').value,
+      glass: row.querySelector('.ps_glass').value,
+      glassStatus: row.querySelector('.ps_glassStatus').value
+    });
+  });
+
+  const slimline = [];
+  document.querySelectorAll('#slimlineContainer .repeater-row').forEach(row => {
+    slimline.push({
+      location: row.querySelector('.sl_loc').value,
+      profile: row.querySelector('.sl_profile').value,
+      profileStatus: row.querySelector('.sl_profileStatus').value,
+      glass: row.querySelector('.sl_glass').value,
+      glassStatus: row.querySelector('.sl_glassStatus').value
+    });
+  });
+
+  const mirrors = [];
+  document.querySelectorAll('#mirrorsContainer .repeater-row').forEach(row => {
+    const isFrameless = row.querySelector('.m_type').value.startsWith('Frameless');
+    const isNoLED = row.querySelector('.m_type').value.includes('No LED');
+    mirrors.push({
+      room: row.querySelector('.m_room').value,
+      type: row.querySelector('.m_type').value,
+      glassType: row.querySelector('.m_glassType').value,
+      glassStatus: row.querySelector('.m_glassStatus').value,
+      frameStatus: isFrameless ? 'N/A (Frameless)' : row.querySelector('.m_frameStatus').value,
+      frostStatus: isNoLED ? 'Frosting N/A' : row.querySelector('.m_frost').value,
+      electricStatus: isNoLED ? 'N/A (No LED)' : row.querySelector('.m_electric').value
+    });
+  });
+
+  const toughened = [];
+  document.querySelectorAll('#toughenedContainer .repeater-row').forEach(row => {
+    toughened.push({
+      location: row.querySelector('.tg_loc').value,
+      furnaceStatus: row.querySelector('.tg_furnace').value,
+      hwSpec: row.querySelector('.tg_hwSpec').value,
+      hwStatus: row.querySelector('.tg_hwStatus').value
+    });
+  });
+
+  const shelves = [];
+  document.querySelectorAll('#shelvesContainer .repeater-row').forEach(row => {
+    shelves.push({
+      location: row.querySelector('.sh_loc').value,
+      thickness: row.querySelector('.sh_thick').value,
+      status: row.querySelector('.sh_status').value
+    });
+  });
+
+  return {
+    id: activeSiteId || Date.now(),
+    client: document.getElementById('inp_clientName').value.trim(),
+    arch: document.getElementById('inp_archName').value.trim(),
+    targetDate: document.getElementById('inp_targetDate').value,
+    approved: document.getElementById('inp_gateApproval').checked,
+    measured: document.getElementById('inp_gateMeasurements').checked,
+    updatedAt: Date.now(),
+    shutters,
+    slimline,
+    mirrors,
+    toughened,
+    shelves
+  };
+}
+
+function saveActiveSite() {
+  const payload = buildSitePayloadFromForm();
+  if (!payload.client) {
+    alert("Please enter a Client Name or Site Identifier.");
+    return;
+  }
+
+  if (activeSiteId) {
+    const idx = projectSites.findIndex(s => s.id === activeSiteId);
+    if (idx !== -1) projectSites[idx] = payload;
+  } else {
+    projectSites.unshift(payload);
+  }
+
+  saveToStorage();
+  closeEditorModal();
+  renderDashboard();
+  if (document.getElementById('stationView').classList.contains('active')) {
+    renderStationBoard();
+  }
+}
+
+function deleteCurrentSite() {
+  if (!activeSiteId) return;
+  if (confirm("Permanently delete this site tracker?")) {
+    projectSites = projectSites.filter(s => s.id !== activeSiteId);
+    saveToStorage();
+    closeEditorModal();
+    renderDashboard();
+    if (document.getElementById('stationView').classList.contains('active')) {
+      renderStationBoard();
+    }
+  }
+}
+
+renderDashboard();
+</script>
+</body>
+</html>
