@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Glass & Aluminium Operations OS - v8</title>
+<title>Glass & Aluminium Operations OS</title>
 <style>
   :root {
     --primary: #0f172a;
@@ -38,34 +38,34 @@
     --st-blue: #60a5fa;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
-  body { background: var(--bg); color: var(--text-main); line-height: 1.4; -webkit-text-size-adjust: 100%; }
+  html, body { width: 100%; min-height: 100%; background: var(--bg); color: var(--text-main); line-height: 1.4; -webkit-text-size-adjust: 100%; }
 
-  #managerView { padding: 14px; max-width: 1400px; margin: 0 auto; }
+  #managerView { padding: 12px; max-width: 1400px; margin: 0 auto; }
 
   /* Top Navigation */
-  .top-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; background: var(--surface); padding: 14px 18px; border-radius: 8px; border: 1px solid var(--border-light); }
+  .top-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; background: var(--surface); padding: 14px 16px; border-radius: 8px; border: 1px solid var(--border-light); }
   .branding h1 { font-size: 18px; font-weight: 800; color: var(--primary); }
   .branding p { font-size: 12px; color: var(--text-muted); }
   .top-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 
   /* Buttons */
-  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: all 0.15s ease; min-height: 36px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: all 0.15s ease; min-height: 38px; }
   .btn-primary { background: var(--primary-accent); color: #fff; }
   .btn-primary:hover { background: #1d4ed8; }
   .btn-secondary { background: #fff; border-color: var(--border); color: var(--text-main); }
   .btn-secondary:hover { background: #f8fafc; }
   .btn-danger { background: #fff; border-color: #fca5a5; color: var(--c-delayed-txt); }
   .btn-station-launch { background: #111827; color: #fbbf24; border: 1px solid #374151; font-weight: 700; box-shadow: 0 0 10px rgba(251, 191, 36, 0.2); }
-  .btn-add { background: #eff6ff; color: var(--primary-accent); border: 1px dashed var(--primary-accent); padding: 8px 12px; font-size: 12px; width: 100%; justify-content: center; margin-top: 8px; border-radius: 6px; }
+  .btn-add { background: #eff6ff; color: var(--primary-accent); border: 1px dashed var(--primary-accent); padding: 10px 14px; font-size: 12px; font-weight: 700; width: 100%; justify-content: center; margin-top: 8px; border-radius: 6px; }
 
   /* Filter Bar */
-  .filter-bar { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 6px; -webkit-overflow-scrolling: touch; }
+  .filter-bar { display: flex; gap: 8px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 6px; -webkit-overflow-scrolling: touch; }
   .filter-chip { padding: 6px 14px; border-radius: 16px; font-size: 12px; font-weight: 600; background: var(--surface); border: 1px solid var(--border); cursor: pointer; color: var(--text-muted); white-space: nowrap; flex-shrink: 0; }
   .filter-chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
   /* Sites Grid */
   .sites-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
-  .site-card { background: var(--surface); border-radius: 8px; border: 1px solid var(--border-light); padding: 16px; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; position: relative; border-left: 6px solid #94a3b8; }
+  .site-card { background: var(--surface); border-radius: 8px; border: 1px solid var(--border-light); padding: 14px; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; position: relative; border-left: 6px solid #94a3b8; }
   .site-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.06); }
   .site-card.border-ready { border-left-color: var(--c-ready-txt); }
   .site-card.border-processing { border-left-color: var(--c-process-txt); }
@@ -86,7 +86,7 @@
   .progress-bar-fill-shop { background: var(--c-ready-txt); height: 100%; transition: width 0.3s ease; }
   .progress-bar-fill-site { background: var(--c-installed-txt); height: 100%; transition: width 0.3s ease; }
 
-  .gates-row { display: flex; gap: 10px; padding: 6px 0; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); margin-bottom: 10px; font-size: 11px; }
+  .gates-row { display: flex; gap: 10px; padding: 6px 0; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); margin-bottom: 10px; font-size: 11px; flex-wrap: wrap; }
   .gate-indicator { display: flex; align-items: center; gap: 4px; font-weight: 600; }
   .gate-ok { color: var(--c-ready-txt); }
   .gate-pending { color: var(--text-muted); }
@@ -104,45 +104,46 @@
   .badge-installed { background: var(--c-installed-bg); color: var(--c-installed-txt); }
   .badge-neutral { background: var(--c-neutral-bg); color: var(--c-neutral-txt); }
 
-  /* Modals (Job Sheet & Editor) */
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); backdrop-filter: blur(2px); z-index: 1000; align-items: center; justify-content: center; padding: 10px; -webkit-overflow-scrolling: touch; }
+  /* Modals */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.75); backdrop-filter: blur(2px); z-index: 1000; align-items: center; justify-content: center; padding: 8px; }
   .modal-overlay.active { display: flex; }
-  .modal-window { background: var(--surface); width: 100%; max-width: 1050px; max-height: 92vh; border-radius: 10px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.25); }
-  .modal-header { padding: 14px 18px; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; background: #fafafa; flex-shrink: 0; }
+  .modal-window { background: var(--surface); width: 100%; max-width: 1050px; max-height: 92vh; border-radius: 10px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+  .modal-header { padding: 14px 16px; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; background: #fafafa; flex-shrink: 0; }
   .modal-header h2 { font-size: 16px; color: var(--primary); font-weight: 700; }
-  .modal-body { padding: 16px; overflow-y: auto; -webkit-overflow-scrolling: touch; display: flex; flex-direction: column; gap: 14px; flex: 1; }
-  .modal-footer { padding: 12px 18px; border-top: 1px solid var(--border-light); background: #fafafa; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+  .modal-body { padding: 14px; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 14px; flex: 1; }
+  .modal-footer { padding: 12px 16px; border-top: 1px solid var(--border-light); background: #fafafa; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; flex-wrap: wrap; gap: 8px; }
 
   /* Form Elements */
   .form-grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
   .field-group { display: flex; flex-direction: column; gap: 4px; }
   .field-group label { font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--text-muted); }
   .field-group input, .field-group select { padding: 8px 10px; border: 1px solid var(--border); border-radius: 5px; font-size: 13px; outline: none; background: #fff; min-height: 38px; }
-  .live-calc-box { grid-column: 1 / -1; background: #f8fafc; border: 1px solid var(--border); padding: 10px 14px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
+  .live-calc-box { grid-column: 1 / -1; background: #f8fafc; border: 1px solid var(--border); padding: 10px 14px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
 
   .module-card { border: 1px solid var(--border); border-radius: 6px; padding: 12px; background: #ffffff; }
   .module-title { font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border-light); }
 
-  /* Desktop Repeater Grid */
+  /* Repeater Rows (Desktop Default) */
   .repeater-row { display: grid; gap: 6px; align-items: center; background: #f8fafc; padding: 8px; border-radius: 5px; margin-bottom: 6px; border: 1px solid var(--border-light); font-size: 12px; }
   .repeater-row input, .repeater-row select { font-size: 12px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 4px; background: #fff; width: 100%; min-height: 36px; }
-  .installed-toggle { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; cursor: pointer; color: var(--c-installed-txt); background: var(--c-installed-bg); padding: 4px 8px; border-radius: 4px; white-space: nowrap; }
+  .installed-toggle { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; cursor: pointer; color: var(--c-installed-txt); background: var(--c-installed-bg); padding: 6px 10px; border-radius: 4px; white-space: nowrap; }
 
   .row-shutter, .row-slimline { grid-template-columns: 1.1fr 1fr 1fr 1.1fr 1.1fr auto auto; }
   .row-mirror { grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr auto auto; }
   .row-toughened { grid-template-columns: 1.1fr 1fr 1.1fr 1fr auto auto; }
   .row-flatglass { grid-template-columns: 1.1fr 1.1fr 1fr 1.1fr auto auto; }
 
-  /* Mobile-Specific Adaptations (< 768px) */
+  .btn-remove-row { color: var(--c-delayed-txt); background: none; border: none; font-size: 16px; cursor: pointer; padding: 0 4px; font-weight: bold; }
+
+  /* Mobile Layout Adaptation (< 768px) */
   @media (max-width: 768px) {
-    #managerView { padding: 10px; }
+    #managerView { padding: 8px; }
     .sites-grid { grid-template-columns: 1fr; }
-    .modal-overlay { padding: 6px; }
+    .modal-overlay { padding: 4px; }
     .modal-window { max-height: 96vh; }
-    .modal-body { padding: 12px; }
+    .modal-body { padding: 10px; }
     .form-grid-3 { grid-template-columns: 1fr; }
     
-    /* Convert rigid horizontal desktop repeater grid into clean stacked touch cards */
     .repeater-row { display: flex; flex-direction: column; align-items: stretch; gap: 8px; padding: 12px; background: #f8fafc; }
     .repeater-row input, .repeater-row select { font-size: 14px; min-height: 40px; }
     .repeater-bottom-row { display: flex; justify-content: space-between; align-items: center; padding-top: 4px; }
@@ -150,7 +151,7 @@
     .btn-remove-row { padding: 6px 12px; background: #fee2e2; border-radius: 4px; }
   }
 
-  /* Job Sheet Read-Only View Elements */
+  /* Job Sheet Read-Only View */
   .jobsheet-scope-block { margin-bottom: 14px; }
   .jobsheet-scope-header { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 6px; display: flex; justify-content: space-between; }
   .jobsheet-item-card { background: #f8fafc; border: 1px solid var(--border-light); border-radius: 6px; padding: 10px 12px; margin-bottom: 6px; display: flex; flex-direction: column; gap: 4px; font-size: 12px; }
@@ -159,17 +160,17 @@
   /* Station Screen Mode */
   #stationView { display: none; position: fixed; inset: 0; background: var(--st-bg); color: var(--st-text); z-index: 2000; flex-direction: column; overflow: hidden; }
   #stationView.active { display: flex; }
-  .station-header { background: #000; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1f2937; flex-wrap: wrap; gap: 10px; }
-  .station-title { font-size: 18px; font-weight: 900; letter-spacing: 1px; color: #f9fafb; text-transform: uppercase; }
-  .station-clock { font-family: "Courier New", Courier, monospace; font-size: 22px; font-weight: 900; color: var(--st-amber); background: #18181b; padding: 4px 12px; border-radius: 6px; border: 1px solid #27272a; }
+  .station-header { background: #000; padding: 12px 18px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1f2937; flex-wrap: wrap; gap: 10px; }
+  .station-title { font-size: 17px; font-weight: 900; letter-spacing: 1px; color: #f9fafb; text-transform: uppercase; }
+  .station-clock { font-family: "Courier New", Courier, monospace; font-size: 20px; font-weight: 900; color: var(--st-amber); background: #18181b; padding: 4px 10px; border-radius: 6px; border: 1px solid #27272a; }
 
-  .ticker-wrap { width: 100%; overflow: hidden; background: #18181b; border-bottom: 2px solid #27272a; padding: 8px 0; white-space: nowrap; }
+  .ticker-wrap { width: 100%; overflow: hidden; background: #18181b; border-bottom: 2px solid #27272a; padding: 8px 0; white-space: nowrap; flex-shrink: 0; }
   .ticker-move { display: inline-block; padding-left: 100%; animation: tickerAnim 35s linear infinite; }
   .ticker-move:hover { animation-play-state: paused; }
   @keyframes tickerAnim { 0% { transform: translate3d(0,0,0); } 100% { transform: translate3d(-100%,0,0); } }
   .ticker-item { display: inline-flex; align-items: center; margin-right: 36px; font-size: 13px; font-weight: 700; }
 
-  .station-body { flex: 1; overflow-y: auto; overflow-x: auto; padding: 16px; -webkit-overflow-scrolling: touch; }
+  .station-body { flex: 1; overflow-y: auto; overflow-x: auto; padding: 14px; -webkit-overflow-scrolling: touch; }
   .station-table { width: 100%; min-width: 650px; border-collapse: collapse; }
   .station-table th { background: #111827; color: #9ca3af; text-align: left; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; padding: 10px 12px; border-bottom: 2px solid #374151; }
   .station-table td { padding: 12px; border-bottom: 1px solid #1f2937; font-size: 13px; background: #090d16; cursor: pointer; }
@@ -189,10 +190,10 @@
       <p>Precision Workshop Engine & Partial Installation Tracker</p>
     </div>
     <div class="top-actions">
-      <button class="btn btn-station-launch" onclick="launchStationDisplay()">📺 Station Display Screen</button>
+      <button class="btn btn-station-launch" onclick="launchStationDisplay()">📺 Station Display</button>
       <button class="btn btn-secondary" onclick="exportDataJSON()">Export Backup</button>
-      <button class="btn btn-secondary" onclick="document.getElementById('importFileInput').click()">Import Backup</button>
-      <input type="file" id="importFileInput" style="display:none" accept=".json" onchange="importDataJSON(event)">
+      <button class="btn btn-secondary" onclick="triggerImport()">Import Backup</button>
+      <input type="file" id="importFileInput" style="display:none" accept=".json,application/json" onchange="importDataJSON(event)">
       <button class="btn btn-primary" onclick="openCreateModal()">+ Add New Site</button>
     </div>
   </div>
@@ -200,11 +201,11 @@
   <div class="filter-bar">
     <button class="filter-chip active" onclick="applyFilter('all', this)">All Projects</button>
     <button class="filter-chip" onclick="applyFilter('stagnant', this)">⚠️ Stagnant (2+ Days Idle)</button>
-    <button class="filter-chip" onclick="applyFilter('vendor', this)">🟡 Waiting on Vendors / Sandblaster</button>
-    <button class="filter-chip" onclick="applyFilter('delayed', this)">🔴 Site Gate / Measurements Pending</button>
+    <button class="filter-chip" onclick="applyFilter('vendor', this)">🟡 Waiting on Vendors</button>
+    <button class="filter-chip" onclick="applyFilter('delayed', this)">🔴 Gate Pending</button>
     <button class="filter-chip" onclick="applyFilter('processing', this)">🔵 In Shop Fabrication</button>
-    <button class="filter-chip" onclick="applyFilter('installing', this)">🟣 On-Site Installation Ongoing</button>
-    <button class="filter-chip" onclick="applyFilter('ready', this)">🟢 100% Completed & Installed</button>
+    <button class="filter-chip" onclick="applyFilter('installing', this)">🟣 On-Site Installing</button>
+    <button class="filter-chip" onclick="applyFilter('ready', this)">🟢 100% Completed</button>
   </div>
 
   <div class="sites-grid" id="sitesGridContainer"></div>
@@ -215,9 +216,9 @@
   <div class="station-header">
     <div>
       <div class="station-title">Live Workshop Operations Board</div>
-      <div style="font-size: 11px; color: #9ca3af;">Tap any project to view inspection sheet</div>
+      <div style="font-size: 11px; color: #9ca3af;">Tap any project row to view details</div>
     </div>
-    <div style="display: flex; align-items: center; gap: 12px;">
+    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
       <div class="station-clock" id="stationClockDisplay">00:00:00</div>
       <button class="btn btn-secondary" id="toggleViewModeBtn" onclick="toggleStationLayoutMode()" style="background:#1f2937; color:#fff; border-color:#374151;">🔄 Carousel Mode</button>
       <button class="btn btn-secondary" onclick="toggleFullScreen()" style="background:#1f2937; color:#fff; border-color:#374151;">⛶ Fullscreen</button>
@@ -249,20 +250,18 @@
   </div>
 </div>
 
-<!-- 3. READ-ONLY JOB SHEET INSPECTION MODAL (Step 1) -->
+<!-- 3. READ-ONLY JOB SHEET INSPECTION MODAL -->
 <div class="modal-overlay" id="inspectModal">
   <div class="modal-window">
     <div class="modal-header">
       <div>
-        <h2 id="inspectSiteTitle" style="font-size: 17px;">Project Inspection Sheet</h2>
-        <div id="inspectSiteMeta" style="font-size: 12px; color: var(--text-muted);">Architect: Studio Vista</div>
+        <h2 id="inspectSiteTitle" style="font-size: 16px;">Project Inspection Sheet</h2>
+        <div id="inspectSiteMeta" style="font-size: 12px; color: var(--text-muted);">Architect: Direct Client</div>
       </div>
       <button class="btn btn-secondary" onclick="closeInspectModal()" style="padding: 4px 10px;">✕</button>
     </div>
 
-    <div class="modal-body" id="inspectModalBody">
-      <!-- Injected by JavaScript -->
-    </div>
+    <div class="modal-body" id="inspectModalBody"></div>
 
     <div class="modal-footer">
       <div id="inspectUpdatedStamp" style="font-size: 11px; color: var(--text-muted);">Last Updated: Recently</div>
@@ -274,7 +273,7 @@
   </div>
 </div>
 
-<!-- 4. MODAL DEEP-DIVE EDITOR (Step 2) -->
+<!-- 4. MODAL DEEP-DIVE EDITOR -->
 <div class="modal-overlay" id="editorModal">
   <div class="modal-window">
     <div class="modal-header">
@@ -327,7 +326,7 @@
         <button class="btn btn-add" onclick="addProfileShutterRow()">+ Add Profile Shutter Row</button>
       </div>
 
-      <!-- Scope 2: Slimline Sliding & Partitions -->
+      <!-- Scope 2: Slimline Partitions -->
       <div class="module-card">
         <div class="module-title">2. Slimline Profile Partitions</div>
         <div id="slimlineContainer"></div>
@@ -336,19 +335,19 @@
 
       <!-- Scope 3: Mirrors Matrix -->
       <div class="module-card">
-        <div class="module-title">3. Mirrors Matrix (Double Freeze: Frameless & Non-LED Controlled)</div>
+        <div class="module-title">3. Mirrors Matrix (Frameless / Framed × Regular / LED)</div>
         <div id="mirrorsContainer"></div>
         <button class="btn btn-add" onclick="addMirrorRow()">+ Add Mirror Row</button>
       </div>
 
-      <!-- Scope 4: Toughened Glass Partitions & Showers -->
+      <!-- Scope 4: Toughened Partitions -->
       <div class="module-card">
         <div class="module-title">4. Toughened Glass Partitions & Shower Enclosures</div>
         <div id="toughenedContainer"></div>
         <button class="btn btn-add" onclick="addToughenedRow()">+ Add Toughened Partition / Shower Row</button>
       </div>
 
-      <!-- Scope 5: Flat Glass Processing, Table Tops & Shelves -->
+      <!-- Scope 5: Flat Glass Processing -->
       <div class="module-card">
         <div class="module-title">5. Flat Glass Processing, Table Tops & Shelves</div>
         <div id="flatGlassContainer"></div>
@@ -367,89 +366,206 @@
 </div>
 
 <script>
-let projectSites = JSON.parse(localStorage.getItem('glass_ops_tracker_v8') || '[]');
+// ========================================================
+// UNIVERSAL DATA NORMALIZATION ENGINE (BACKWARD COMPATIBILITY)
+// ========================================================
+function normalizeSiteData(rawList) {
+  if (!rawList) return [];
+  let list = rawList;
+  if (!Array.isArray(list)) {
+    if (list.sites && Array.isArray(list.sites)) list = list.sites;
+    else if (list.projectSites && Array.isArray(list.projectSites)) list = list.projectSites;
+    else list = [list];
+  }
+
+  return list.map((s, idx) => {
+    if (!s || typeof s !== 'object') return null;
+
+    let shutters = Array.isArray(s.shutters) ? s.shutters : [];
+    let slimline = Array.isArray(s.slimline) ? s.slimline : [];
+    let mirrors = Array.isArray(s.mirrors) ? s.mirrors : [];
+    let toughened = Array.isArray(s.toughened) ? s.toughened : [];
+    let flatGlass = Array.isArray(s.flatGlass) ? s.flatGlass : [];
+
+    // Migrate old shelves if flatGlass is empty
+    if (flatGlass.length === 0 && Array.isArray(s.shelves)) {
+      flatGlass = s.shelves.map(sh => ({
+        location: sh.location || 'Shelves / Niche',
+        glassSpec: sh.thickness || 'Glass Shelf',
+        availStatus: (sh.status === 'Ready for Site' || sh.status === 'Edge Polishing in Shop' || (sh.thickness && sh.thickness.includes('8mm'))) ? 'In Stock' : 'Ordered at Plant / Supplier',
+        processStatus: sh.status === 'Ready for Site' ? 'Ready for Dispatch' : (sh.status === 'Plant Order Placed' ? 'In Cutting' : (sh.status || 'In Edge Polishing')),
+        installed: sh.installed === true
+      }));
+    }
+
+    shutters = shutters.map(item => ({
+      room: item.room || '',
+      profile: item.profile || '',
+      profileStatus: item.profileStatus || item.frameStatus || 'Available In Shop',
+      glass: item.glass || '',
+      glassStatus: item.glassStatus || 'Available In Stock',
+      installed: item.installed === true
+    }));
+
+    slimline = slimline.map(item => ({
+      location: item.location || '',
+      profile: item.profile || '',
+      profileStatus: item.profileStatus || 'Available In Shop',
+      glass: item.glass || '',
+      glassStatus: item.glassStatus || 'Available In Stock',
+      installed: item.installed === true
+    }));
+
+    mirrors = mirrors.map(item => ({
+      room: item.room || '',
+      type: item.type || 'Frameless (No LED)',
+      glassType: item.glassType || 'Clear Mirror',
+      glassStatus: item.glassStatus || 'Available In Stock',
+      frameStatus: item.frameStatus || (item.type && item.type.includes('Frameless') ? 'N/A (Frameless)' : 'In Shop'),
+      frostStatus: item.frostStatus || (item.type && item.type.includes('No LED') ? 'Frosting N/A' : 'Frosting N/A'),
+      electricStatus: item.electricStatus || (item.type && item.type.includes('No LED') ? 'N/A (No LED)' : 'Drivers / Strips in Shop'),
+      installed: item.installed === true
+    }));
+
+    toughened = toughened.map(item => ({
+      location: item.location || '',
+      furnaceStatus: item.furnaceStatus || 'Cutouts Freeze',
+      hwSpec: item.hwSpec || '',
+      hwStatus: item.hwStatus || 'In Stock (SS)',
+      installed: item.installed === true
+    }));
+
+    flatGlass = flatGlass.map(item => ({
+      location: item.location || '',
+      glassSpec: item.glassSpec || '',
+      availStatus: item.availStatus || 'In Stock',
+      processStatus: item.processStatus || 'In Cutting',
+      installed: item.installed === true
+    }));
+
+    return {
+      id: s.id || (Date.now() + idx),
+      client: s.client || s.clientName || 'Untitled Project',
+      arch: s.arch || s.archName || '',
+      targetDate: s.targetDate || '',
+      approved: s.approved === true,
+      measured: s.measured === true,
+      updatedAt: s.updatedAt || s.id || Date.now(),
+      shutters,
+      slimline,
+      mirrors,
+      toughened,
+      flatGlass
+    };
+  }).filter(Boolean);
+}
+
+// Cascade through all past storage keys on launch
+const STORAGE_KEY = 'glass_ops_tracker_v8';
+const LEGACY_KEYS = [
+  'glass_ops_tracker_v8',
+  'glass_ops_tracker_v7',
+  'glass_ops_tracker_v6',
+  'glass_ops_tracker_v5',
+  'glass_ops_tracker_v4',
+  'glass_ops_tracker_v3',
+  'glass_tracker_sites'
+];
+
+let projectSites = [];
+for (const k of LEGACY_KEYS) {
+  const stored = localStorage.getItem(k);
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      const normalized = normalizeSiteData(parsed);
+      if (normalized && normalized.length > 0) {
+        projectSites = normalized;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(projectSites));
+        break;
+      }
+    } catch (e) {
+      console.warn('Could not parse legacy key:', k);
+    }
+  }
+}
+
+// Fallback seed if brand new setup
+if (projectSites.length === 0) {
+  projectSites = [
+    {
+      id: 1728000001,
+      client: "Bunglow 42 - Mr. Sanghavi",
+      arch: "Design Atelier",
+      targetDate: "2026-10-15",
+      approved: true,
+      measured: true,
+      updatedAt: Date.now() - (3 * 24 * 60 * 60 * 1000),
+      shutters: [
+        { room: "Master Wardrobe", profile: "20mm Slim Black", profileStatus: "Mitre Cutting", glass: "Fluted Glass", glassStatus: "In Cutting", installed: false }
+      ],
+      slimline: [],
+      mirrors: [
+        { room: "Master Vanity", type: "Framed + LED", glassType: "Bronze Mirror", glassStatus: "In Edge Polishing", frameStatus: "Mitre / Assembly", frostStatus: "At Sandblaster", electricStatus: "Drivers / Strips in Shop", installed: false }
+      ],
+      toughened: [],
+      flatGlass: [
+        { location: "Living Dining Table Top", glassSpec: "12mm Clear Toughened Bevel", availStatus: "In Stock", processStatus: "In Edge Polishing", installed: false }
+      ]
+    }
+  ];
+  saveToStorage();
+}
+
 let activeSiteId = null;
 let currentFilter = 'all';
 let isSpotlightMode = false;
 let spotlightIndex = 0;
 let spotlightInterval = null;
 
-// Initial sample seed with backward compatibility conversion
-if (projectSites.length === 0) {
-  // Check v7 fallback
-  const v7 = JSON.parse(localStorage.getItem('glass_ops_tracker_v7') || 'null');
-  if (v7 && v7.length) {
-    projectSites = v7.map(s => {
-      // Migrate old shelves to flatGlass
-      const flatGlass = (s.shelves || []).map(sh => ({
-        location: sh.location || 'Niche Shelf',
-        glassSpec: sh.thickness || '12mm Toughened',
-        availStatus: 'Ordered',
-        processStatus: sh.status || 'In Polishing',
-        installed: false
-      }));
-      return { ...s, flatGlass };
-    });
-  } else {
-    projectSites = [
-      {
-        id: 1728000001,
-        client: "Bunglow 42 - Mr. Sanghavi",
-        arch: "Design Atelier",
-        targetDate: "2026-10-15",
-        approved: true,
-        measured: true,
-        updatedAt: Date.now() - (3 * 24 * 60 * 60 * 1000),
-        shutters: [
-          { room: "Master Wardrobe", profile: "20mm Slim Black", profileStatus: "Mitre Cutting", glass: "Fluted Glass", glassStatus: "In Cutting", installed: false },
-          { room: "Dresser Unit", profile: "Gola Champagne Gold", profileStatus: "Ready for Dispatch", glass: "Bronze Mirror", glassStatus: "Ready for Dispatch", installed: true }
-        ],
-        slimline: [
-          { location: "Foyer Slimline Sliding", profile: "Slim Partition Black", profileStatus: "Arrived", glass: "Backpainted Glass", glassStatus: "Sample Sent to Arch", installed: false }
-        ],
-        mirrors: [
-          { room: "Master Vanity", type: "Framed + LED", glassType: "Bronze Mirror", glassStatus: "In Edge Polishing", frameStatus: "Mitre / Assembly", frostStatus: "At Sandblaster", electricStatus: "Drivers / Strips in Shop", installed: false },
-          { room: "Powder Room", type: "Frameless (No LED)", glassType: "Clear Mirror", glassStatus: "Ready for Dispatch", frameStatus: "N/A (Frameless)", frostStatus: "Frosting N/A", electricStatus: "N/A (No LED)", installed: true }
-        ],
-        toughened: [
-          { location: "Master Shower Enclosure", glassSpec: "10mm Toughened Clear", furnaceStatus: "PO at Plant", hwSpec: "Matt Black PVD", hwStatus: "Procurement Ordered", installed: false }
-        ],
-        flatGlass: [
-          { location: "Living Dining Table Top", glassSpec: "12mm Clear Toughened Bevel", availStatus: "In Stock", processStatus: "In Edge Polishing", installed: false },
-          { location: "Shower Niche Shelves", glassSpec: "8mm Clear Toughened", availStatus: "In Stock", processStatus: "Ready for Dispatch", installed: true }
-        ]
-      }
-    ];
-  }
-  saveToStorage();
-}
-
 function saveToStorage() {
-  localStorage.setItem('glass_ops_tracker_v8', JSON.stringify(projectSites));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(projectSites));
 }
 
 function exportDataJSON() {
   const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(projectSites, null, 2));
   const dlAnchor = document.createElement('a');
   dlAnchor.setAttribute("href", dataStr);
-  dlAnchor.setAttribute("download", `Glass_Operations_Tracker_v8_${new Date().toISOString().slice(0,10)}.json`);
+  dlAnchor.setAttribute("download", `Glass_Operations_Backup_${new Date().toISOString().slice(0,10)}.json`);
   document.body.appendChild(dlAnchor);
   dlAnchor.click();
   dlAnchor.remove();
 }
 
+function triggerImport() {
+  const input = document.getElementById('importFileInput');
+  if (input) {
+    input.value = '';
+    input.click();
+  }
+}
+
 function importDataJSON(event) {
-  const file = event.target.files[0];
+  const file = event.target.files && event.target.files[0];
   if (!file) return;
   const reader = new FileReader();
   reader.onload = function(e) {
     try {
-      projectSites = JSON.parse(e.target.result);
+      const raw = JSON.parse(e.target.result);
+      const normalized = normalizeSiteData(raw);
+      if (!normalized || normalized.length === 0) {
+        alert('No valid project records found in this backup file.');
+        return;
+      }
+      projectSites = normalized;
       saveToStorage();
       renderDashboard();
-      alert('Data restored successfully!');
+      if (document.getElementById('stationView').classList.contains('active')) {
+        renderStationBoard();
+      }
+      alert(`Success! Imported ${projectSites.length} project(s) seamlessly.`);
     } catch (err) {
-      alert('Invalid JSON file format.');
+      alert('Error parsing backup file: ' + err.message);
     }
   };
   reader.readAsText(file);
@@ -463,103 +579,90 @@ function applyFilter(f, btn) {
 }
 
 // ==========================================
-// AUTO-STAGE & READINESS ENGINE
+// AUTO-STAGE ENGINE
 // ==========================================
 function computeAutoStage(site) {
-  if (!site.measured) {
-    return { stageKey: 'delayed', label: '🔴 Gate: Final Measurements Pending', colorClass: 'badge-delayed', borderClass: 'border-delayed', stationBadge: 'color: #f87171', bottleneck: 'Laser measurements not yet locked' };
-  }
-  if (!site.approved) {
-    return { stageKey: 'delayed', label: '🔴 Gate: Drawings Awaiting Approval', colorClass: 'badge-delayed', borderClass: 'border-delayed', stationBadge: 'color: #f87171', bottleneck: 'Architect drawing sign-off pending' };
-  }
-
-  const vendorBottlenecks = [];
-  const inProcessingItems = [];
   let totalItems = 0;
   let readyItems = 0;
   let installedItems = 0;
+  const vendorBottlenecks = [];
+  const inProcessingItems = [];
 
-  // Shutters
   (site.shutters || []).forEach(sh => {
     totalItems++;
     const isReady = (sh.profileStatus === 'Ready for Dispatch' && sh.glassStatus === 'Ready for Dispatch');
     if (isReady) readyItems++;
     if (sh.installed) installedItems++;
-
-    if (sh.profileStatus === 'Ordered') vendorBottlenecks.push(`Profile Order: ${sh.room}`);
-    if (sh.glassStatus === 'Ordered') vendorBottlenecks.push(`Glass Order: ${sh.room}`);
-    if (sh.glassStatus === 'Sample Sent to Arch') vendorBottlenecks.push(`Sample at Arch: ${sh.room}`);
-    if (!isReady && sh.profileStatus !== 'Ordered' && sh.glassStatus !== 'Ordered') inProcessingItems.push(`Shutter: ${sh.room}`);
+    if (sh.profileStatus === 'Ordered') vendorBottlenecks.push(`Profile Order: ${sh.room || 'Room'}`);
+    if (sh.glassStatus === 'Ordered') vendorBottlenecks.push(`Glass Order: ${sh.room || 'Room'}`);
+    if (sh.glassStatus === 'Sample Sent to Arch') vendorBottlenecks.push(`Sample at Arch: ${sh.room || 'Room'}`);
+    if (!isReady && sh.profileStatus !== 'Ordered' && sh.glassStatus !== 'Ordered') inProcessingItems.push(`Shutter: ${sh.room || 'Room'}`);
   });
 
-  // Slimline
   (site.slimline || []).forEach(sl => {
     totalItems++;
     const isReady = (sl.profileStatus === 'Ready for Dispatch' && sl.glassStatus === 'Ready for Dispatch');
     if (isReady) readyItems++;
     if (sl.installed) installedItems++;
-
-    if (sl.profileStatus === 'Ordered') vendorBottlenecks.push(`Slimline Frame: ${sl.location}`);
-    if (sl.glassStatus === 'Ordered') vendorBottlenecks.push(`Slimline Glass: ${sl.location}`);
-    if (sl.glassStatus === 'Sample Sent to Arch') vendorBottlenecks.push(`Sample at Arch: ${sl.location}`);
-    if (!isReady) inProcessingItems.push(`Slimline: ${sl.location}`);
+    if (sl.profileStatus === 'Ordered') vendorBottlenecks.push(`Slimline Frame: ${sl.location || 'Area'}`);
+    if (sl.glassStatus === 'Ordered') vendorBottlenecks.push(`Slimline Glass: ${sl.location || 'Area'}`);
+    if (sl.glassStatus === 'Sample Sent to Arch') vendorBottlenecks.push(`Sample at Arch: ${sl.location || 'Area'}`);
+    if (!isReady) inProcessingItems.push(`Slimline: ${sl.location || 'Area'}`);
   });
 
-  // Mirrors
   (site.mirrors || []).forEach(m => {
     totalItems++;
     const isReady = (m.glassStatus === 'Ready for Dispatch' && (m.frostStatus === 'Received Back' || m.frostStatus === 'Frosting N/A'));
     if (isReady) readyItems++;
     if (m.installed) installedItems++;
-
-    if (m.glassStatus === 'Ordered') vendorBottlenecks.push(`Mirror Glass: ${m.room}`);
-    if (m.frostStatus === 'At Sandblaster') vendorBottlenecks.push(`Sandblaster: ${m.room}`);
-    if (m.frameStatus === 'Ordered') vendorBottlenecks.push(`Mirror Frame: ${m.room}`);
-    if (!isReady) inProcessingItems.push(`Mirror: ${m.room}`);
+    if (m.glassStatus === 'Ordered') vendorBottlenecks.push(`Mirror Glass: ${m.room || 'Vanity'}`);
+    if (m.frostStatus === 'At Sandblaster') vendorBottlenecks.push(`Sandblaster: ${m.room || 'Vanity'}`);
+    if (m.frameStatus === 'Ordered') vendorBottlenecks.push(`Mirror Frame: ${m.room || 'Vanity'}`);
+    if (!isReady) inProcessingItems.push(`Mirror: ${m.room || 'Vanity'}`);
   });
 
-  // Toughened
   (site.toughened || []).forEach(tg => {
     totalItems++;
     const isReady = (tg.furnaceStatus === 'Dispatched to Site' && tg.hwStatus === 'Received at Shop');
     if (isReady) readyItems++;
     if (tg.installed) installedItems++;
-
-    if (tg.furnaceStatus === 'PO at Plant') vendorBottlenecks.push(`Tempering Furnace: ${tg.location}`);
-    if (tg.hwStatus === 'Procurement Ordered') vendorBottlenecks.push(`Hardware Order: ${tg.location}`);
-    if (!isReady) inProcessingItems.push(`Toughened: ${tg.location}`);
+    if (tg.furnaceStatus === 'PO at Plant') vendorBottlenecks.push(`Tempering: ${tg.location || 'Partition'}`);
+    if (tg.hwStatus === 'Procurement Ordered') vendorBottlenecks.push(`Hardware: ${tg.location || 'Partition'}`);
+    if (!isReady) inProcessingItems.push(`Toughened: ${tg.location || 'Partition'}`);
   });
 
-  // Flat Glass & Shelves
   (site.flatGlass || []).forEach(fg => {
     totalItems++;
     const isReady = (fg.processStatus === 'Ready for Dispatch');
     if (isReady) readyItems++;
     if (fg.installed) installedItems++;
-
-    if (fg.availStatus === 'Ordered at Plant / Supplier') vendorBottlenecks.push(`Glass Order: ${fg.location}`);
-    if (!isReady) inProcessingItems.push(`Flat Glass: ${fg.location}`);
+    if (fg.availStatus && fg.availStatus.includes('Ordered')) vendorBottlenecks.push(`Glass Order: ${fg.location || 'Item'}`);
+    if (!isReady) inProcessingItems.push(`Flat Glass: ${fg.location || 'Item'}`);
   });
+
+  if (!site.measured) {
+    return { stageKey: 'delayed', label: '🔴 Gate: Final Measurements Pending', colorClass: 'badge-delayed', borderClass: 'border-delayed', stationBadge: 'color: #f87171', bottleneck: 'Laser measurements not yet locked', totalItems, readyItems, installedItems };
+  }
+  if (!site.approved) {
+    return { stageKey: 'delayed', label: '🔴 Gate: Drawings Awaiting Approval', colorClass: 'badge-delayed', borderClass: 'border-delayed', stationBadge: 'color: #f87171', bottleneck: 'Architect drawing sign-off pending', totalItems, readyItems, installedItems };
+  }
 
   if (totalItems === 0) {
     return { stageKey: 'processing', label: '⚪ Scope Definition Pending', colorClass: 'badge-neutral', borderClass: '', stationBadge: 'color: #9ca3af', bottleneck: 'No scopes added yet', totalItems, readyItems, installedItems };
   }
 
-  // 100% Installed on Site
-  if (installedItems === totalItems) {
+  if (installedItems === totalItems && totalItems > 0) {
     return { stageKey: 'ready', label: '🟢 100% Installed & Signed Off', colorClass: 'badge-ready', borderClass: 'border-ready', stationBadge: 'color: #34d399', bottleneck: 'All components installed and handed over', totalItems, readyItems, installedItems };
   }
 
-  // 100% Shop Ready, Installation in Progress
-  if (readyItems === totalItems) {
+  if (readyItems === totalItems && totalItems > 0) {
     return { stageKey: 'installing', label: `🟣 Shop 100% Ready • Site Fitting (${installedItems}/${totalItems})`, colorClass: 'badge-installed', borderClass: 'border-ready', stationBadge: 'color: #a78bfa', bottleneck: 'All fabricated; on-site installation ongoing', totalItems, readyItems, installedItems };
   }
 
-  // External Bottleneck
   if (vendorBottlenecks.length > 0) {
     return {
       stageKey: 'vendor',
-      label: `🟡 Awaiting External Dependencies (${vendorBottlenecks.length})`,
+      label: `🟡 Awaiting Dependencies (${vendorBottlenecks.length})`,
       colorClass: 'badge-vendor',
       borderClass: 'border-vendor',
       stationBadge: 'color: #fbbf24',
@@ -568,7 +671,6 @@ function computeAutoStage(site) {
     };
   }
 
-  // In Shop Processing
   return {
     stageKey: 'processing',
     label: `🔵 In Shop Fabrication (${inProcessingItems.length} active)`,
@@ -669,13 +771,12 @@ function renderDashboard() {
       microCards.push(`
         <div class="item-micro-card">
           <div class="item-micro-header">
-            <span>Mirror: ${m.room || 'Vanity'} (${m.glassType || 'Mirror'})</span>
+            <span>Mirror: ${m.room || 'Vanity'} (${m.glassType})</span>
             ${m.installed ? '<span class="status-pill badge-installed">✓ Installed</span>' : ''}
           </div>
           <div class="item-badge-flex">
             <span class="status-pill ${getStatusClass(m.glassStatus)}">Glass: ${m.glassStatus}</span>
             ${m.frostStatus !== 'Frosting N/A' ? `<span class="status-pill ${getStatusClass(m.frostStatus)}">Frost: ${m.frostStatus}</span>` : ''}
-            ${m.frameStatus !== 'N/A (Frameless)' ? `<span class="status-pill ${getStatusClass(m.frameStatus)}">Frame: ${m.frameStatus}</span>` : ''}
           </div>
         </div>
       `);
@@ -743,7 +844,6 @@ function renderDashboard() {
           </div>
         </div>
 
-        <!-- Dual Progress Tracking -->
         <div class="progress-wrap">
           <div class="progress-row">
             <div class="progress-meta">
@@ -792,15 +892,14 @@ function openInspectModal(siteId) {
 
   let bodyHtml = `
     <div style="background:#f8fafc; border:1px solid var(--border-light); border-radius:6px; padding:12px; margin-bottom:12px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
         <span class="status-pill ${auto.colorClass}" style="font-size:12px; padding:4px 8px;">${auto.label}</span>
-        <span style="font-size:12px; font-weight:700;">Site Gates: ${site.approved ? '✓ Approved' : '○ Approval Pending'} | ${site.measured ? '✓ Measured' : '○ Pending Measure'}</span>
+        <span style="font-size:12px; font-weight:700;">Gates: ${site.approved ? '✓ Approved' : '○ Pending'} | ${site.measured ? '✓ Measured' : '○ Pending'}</span>
       </div>
-      <div style="font-size:12px; color:var(--text-muted);"><strong>Critical Action / Waiting On:</strong> ${auto.bottleneck}</div>
+      <div style="font-size:12px; color:var(--text-muted);"><strong>Critical Action:</strong> ${auto.bottleneck}</div>
     </div>
   `;
 
-  // 1. Shutters
   if ((site.shutters || []).length > 0) {
     bodyHtml += `
       <div class="jobsheet-scope-block">
@@ -808,7 +907,7 @@ function openInspectModal(siteId) {
         ${site.shutters.map(sh => `
           <div class="jobsheet-item-card">
             <div class="jobsheet-item-title">
-              <span>${sh.room \vert{}\vert{} 'Room'}</span>${sh.installed ? '<span class="status-pill badge-installed">✓ Installed on Site</span>' : '<span class="status-pill badge-neutral">Site Pending</span>'}
+              <span>${sh.room \vert{}\vert{} 'Room'}</span>${sh.installed ? '<span class="status-pill badge-installed">✓ Installed</span>' : '<span class="status-pill badge-neutral">Site Pending</span>'}
             </div>
             <div><strong>Profile:</strong> ${sh.profile || 'Standard'} • <span class="status-pill ${getStatusClass(sh.profileStatus)}">${sh.profileStatus}</span></div>
             <div><strong>Glass:</strong> ${sh.glass || 'Glass Spec'} • <span class="status-pill ${getStatusClass(sh.glassStatus)}">${sh.glassStatus}</span></div>
@@ -818,7 +917,6 @@ function openInspectModal(siteId) {
     `;
   }
 
-  // 2. Slimline
   if ((site.slimline || []).length > 0) {
     bodyHtml += `
       <div class="jobsheet-scope-block">
@@ -826,7 +924,7 @@ function openInspectModal(siteId) {
         ${site.slimline.map(sl => `
           <div class="jobsheet-item-card">
             <div class="jobsheet-item-title">
-              <span>${sl.location \vert{}\vert{} 'Area'}</span>${sl.installed ? '<span class="status-pill badge-installed">✓ Installed on Site</span>' : '<span class="status-pill badge-neutral">Site Pending</span>'}
+              <span>${sl.location \vert{}\vert{} 'Area'}</span>${sl.installed ? '<span class="status-pill badge-installed">✓ Installed</span>' : '<span class="status-pill badge-neutral">Site Pending</span>'}
             </div>
             <div><strong>Profile:</strong> ${sl.profile || 'Slimline'} • <span class="status-pill ${getStatusClass(sl.profileStatus)}">${sl.profileStatus}</span></div>
             <div><strong>Glass:</strong> ${sl.glass || 'Glass Spec'} • <span class="status-pill ${getStatusClass(sl.glassStatus)}">${sl.glassStatus}</span></div>
@@ -836,7 +934,6 @@ function openInspectModal(siteId) {
     `;
   }
 
-  // 3. Mirrors
   if ((site.mirrors || []).length > 0) {
     bodyHtml += `
       <div class="jobsheet-scope-block">
@@ -844,7 +941,7 @@ function openInspectModal(siteId) {
         ${site.mirrors.map(m => `
           <div class="jobsheet-item-card">
             <div class="jobsheet-item-title">
-              <span>${m.room || 'Vanity'} (${m.type})</span>${m.installed ? '<span class="status-pill badge-installed">✓ Installed on Site</span>' : '<span class="status-pill badge-neutral">Site Pending</span>'}
+              <span>${m.room || 'Vanity'} (${m.type})</span>${m.installed ? '<span class="status-pill badge-installed">✓ Installed</span>' : '<span class="status-pill badge-neutral">Site Pending</span>'}
             </div>
             <div><strong>Mirror Glass:</strong> ${m.glassType} • <span class="status-pill ${getStatusClass(m.glassStatus)}">${m.glassStatus}</span></div>${m.frameStatus !== 'N/A (Frameless)' ? `<div><strong>Frame:</strong> <span class="status-pill ${getStatusClass(m.frameStatus)}">${m.frameStatus}</span></div>` : ''}
             ${m.frostStatus !== 'Frosting N/A' ? `<div><strong>Frosting:</strong> <span class="status-pill ${getStatusClass(m.frostStatus)}">${m.frostStatus}</span></div>` : ''}
@@ -855,7 +952,6 @@ function openInspectModal(siteId) {
     `;
   }
 
-  // 4. Toughened
   if ((site.toughened || []).length > 0) {
     bodyHtml += `
       <div class="jobsheet-scope-block">
@@ -863,17 +959,16 @@ function openInspectModal(siteId) {
         ${site.toughened.map(tg => `
           <div class="jobsheet-item-card">
             <div class="jobsheet-item-title">
-              <span>${tg.location \vert{}\vert{} 'Shower / Partition'}</span>${tg.installed ? '<span class="status-pill badge-installed">✓ Installed on Site</span>' : '<span class="status-pill badge-neutral">Site Pending</span>'}
+              <span>${tg.location \vert{}\vert{} 'Partition'}</span>${tg.installed ? '<span class="status-pill badge-installed">✓ Installed</span>' : '<span class="status-pill badge-neutral">Site Pending</span>'}
             </div>
             <div><strong>Glass & Furnace:</strong> ${tg.glassSpec || '10mm Clear'} • <span class="status-pill ${getStatusClass(tg.furnaceStatus)}">${tg.furnaceStatus}</span></div>
-            <div><strong>Hardware Kit:</strong> ${tg.hwSpec || 'Patch Fittings'} • <span class="status-pill ${getStatusClass(tg.hwStatus)}">${tg.hwStatus}</span></div>
+            <div><strong>Hardware Kit:</strong> ${tg.hwSpec || 'Hardware'} • <span class="status-pill ${getStatusClass(tg.hwStatus)}">${tg.hwStatus}</span></div>
           </div>
         `).join('')}
       </div>
     `;
   }
 
-  // 5. Flat Glass & Shelves
   if ((site.flatGlass || []).length > 0) {
     bodyHtml += `
       <div class="jobsheet-scope-block">
@@ -881,7 +976,7 @@ function openInspectModal(siteId) {
         ${site.flatGlass.map(fg => `
           <div class="jobsheet-item-card">
             <div class="jobsheet-item-title">
-              <span>${fg.location \vert{}\vert{} 'Location'}</span>${fg.installed ? '<span class="status-pill badge-installed">✓ Installed on Site</span>' : '<span class="status-pill badge-neutral">Site Pending</span>'}
+              <span>${fg.location \vert{}\vert{} 'Location'}</span>${fg.installed ? '<span class="status-pill badge-installed">✓ Installed</span>' : '<span class="status-pill badge-neutral">Site Pending</span>'}
             </div>
             <div><strong>Glass Spec:</strong> ${fg.glassSpec || 'Float / Toughened'}</div>
             <div><strong>Procurement:</strong> <span class="status-pill ${getStatusClass(fg.availStatus)}">${fg.availStatus}</span> • <strong>Processing:</strong> <span class="status-pill ${getStatusClass(fg.processStatus)}">${fg.processStatus}</span></div>
@@ -976,16 +1071,15 @@ function getGlassStatusOptionsHTML(selectedVal) {
   return options.map(o => `<option value="${o.val}" ${selectedVal === o.val ? 'selected' : ''}>${o.label}</option>`).join('');
 }
 
-// Guardrail Check
 function checkProfileReadyBeforeGlassProcessing(glassSelectElem, profileSelectClass) {
   const newGlassVal = glassSelectElem.value;
   const isProcessingStatus = (newGlassVal === 'In Cutting' || newGlassVal === 'In Edge Polishing' || newGlassVal === 'In Colouring' || newGlassVal === 'Ready for Dispatch');
   
   if (isProcessingStatus) {
     const row = glassSelectElem.closest('.repeater-row');
-    const profileVal = row.querySelector(profileSelectClass).value;
+    const profileVal = (row.querySelector(profileSelectClass) || {}).value;
     
-    if (profileVal !== 'Ready for Dispatch') {
+    if (profileVal && profileVal !== 'Ready for Dispatch') {
       const confirmProceed = confirm(
         `⚠️ WORKSHOP ALERT:\n\nProfile is currently marked as: "${profileVal}".\n` +
         `Standard sequence requires profiles to be assembled/ready before glass sizing and cutting.\n\n` +
@@ -1004,7 +1098,6 @@ function checkProfileReadyBeforeGlassProcessing(glassSelectElem, profileSelectCl
   refreshModalAutoStatus();
 }
 
-// 1. Shutter Row Generator
 function addProfileShutterRow(data = {}) {
   const container = document.getElementById('profileShuttersContainer');
   const div = document.createElement('div');
@@ -1036,7 +1129,6 @@ function addProfileShutterRow(data = {}) {
   refreshModalAutoStatus();
 }
 
-// 2. Slimline Row Generator
 function addSlimlineRow(data = {}) {
   const container = document.getElementById('slimlineContainer');
   const div = document.createElement('div');
@@ -1068,7 +1160,6 @@ function addSlimlineRow(data = {}) {
   refreshModalAutoStatus();
 }
 
-// 3. Mirror Row Generator (Double Freeze Logic)
 function handleMirrorTypeChange(selectElem) {
   const row = selectElem.closest('.repeater-row');
   const frameSelect = row.querySelector('.m_frameStatus');
@@ -1173,7 +1264,6 @@ function addMirrorRow(data = {}) {
   refreshModalAutoStatus();
 }
 
-// 4. Toughened Partition Row Generator
 function addToughenedRow(data = {}) {
   const container = document.getElementById('toughenedContainer');
   const div = document.createElement('div');
@@ -1203,14 +1293,13 @@ function addToughenedRow(data = {}) {
   refreshModalAutoStatus();
 }
 
-// 5. Flat Glass & Shelf Row Generator
 function addFlatGlassRow(data = {}) {
   const container = document.getElementById('flatGlassContainer');
   const div = document.createElement('div');
   div.className = 'repeater-row row-flatglass';
   div.innerHTML = `
-    <input type="text" placeholder="Location/Room (e.g. Dining Table / Niche Shelf)" value="${data.location || ''}" class="fg_loc">
-    <input type="text" placeholder="Glass Spec & Thickness (e.g. 12mm Toughened Clear)" value="${data.glassSpec || ''}" class="fg_glassSpec">
+    <input type="text" placeholder="Location/Room (e.g. Dining Table / Shelf)" value="${data.location || ''}" class="fg_loc">
+    <input type="text" placeholder="Glass Spec & Thickness (e.g. 12mm Toughened)" value="${data.glassSpec || ''}" class="fg_glassSpec">
     <select class="fg_availStatus" onchange="refreshModalAutoStatus()">
       <option value="In Stock" ${data.availStatus==='In Stock'?'selected':''}>Glass: In Stock</option>
       <option value="Ordered at Plant / Supplier" ${data.availStatus==='Ordered at Plant / Supplier'?'selected':''}>Glass: Ordered from Plant</option>
@@ -1233,86 +1322,99 @@ function addFlatGlassRow(data = {}) {
   refreshModalAutoStatus();
 }
 
-// Live Status Readout in Modal
 function refreshModalAutoStatus() {
   const tempSite = buildSitePayloadFromForm();
   const auto = computeAutoStage(tempSite);
-  document.getElementById('modalAutoStageText').innerText = auto.label;
-  const pill = document.getElementById('modalAutoStagePill');
-  pill.className = `status-pill ${auto.colorClass}`;
-  pill.innerText = auto.bottleneck || 'Computed Stage';
+  const textEl = document.getElementById('modalAutoStageText');
+  const pillEl = document.getElementById('modalAutoStagePill');
+  if (textEl) textEl.innerText = auto.label;
+  if (pillEl) {
+    pillEl.className = `status-pill ${auto.colorClass}`;
+    pillEl.innerText = auto.bottleneck || 'Computed Stage';
+  }
 }
 
+// Robust element readers preventing crashes
 function buildSitePayloadFromForm() {
+  const getVal = id => {
+    const el = document.getElementById(id);
+    return el ? el.value.trim() : '';
+  };
+  const getCheck = id => {
+    const el = document.getElementById(id);
+    return el ? el.checked : false;
+  };
+
   const shutters = [];
   document.querySelectorAll('#profileShuttersContainer .repeater-row').forEach(row => {
     shutters.push({
-      room: row.querySelector('.ps_room').value,
-      profile: row.querySelector('.ps_profile').value,
-      profileStatus: row.querySelector('.ps_profileStatus').value,
-      glass: row.querySelector('.ps_glass').value,
-      glassStatus: row.querySelector('.ps_glassStatus').value,
-      installed: row.querySelector('.ps_installed').checked
+      room: (row.querySelector('.ps_room') || {}).value || '',
+      profile: (row.querySelector('.ps_profile') || {}).value || '',
+      profileStatus: (row.querySelector('.ps_profileStatus') || {}).value || 'Available In Shop',
+      glass: (row.querySelector('.ps_glass') || {}).value || '',
+      glassStatus: (row.querySelector('.ps_glassStatus') || {}).value || 'Available In Stock',
+      installed: !!((row.querySelector('.ps_installed') || {}).checked)
     });
   });
 
   const slimline = [];
   document.querySelectorAll('#slimlineContainer .repeater-row').forEach(row => {
     slimline.push({
-      location: row.querySelector('.sl_loc').value,
-      profile: row.querySelector('.sl_profile').value,
-      profileStatus: row.querySelector('.sl_profileStatus').value,
-      glass: row.querySelector('.sl_glass').value,
-      glassStatus: row.querySelector('.sl_glassStatus').value,
-      installed: row.querySelector('.sl_installed').checked
+      location: (row.querySelector('.sl_loc') || {}).value || '',
+      profile: (row.querySelector('.sl_profile') || {}).value || '',
+      profileStatus: (row.querySelector('.sl_profileStatus') || {}).value || 'Available In Shop',
+      glass: (row.querySelector('.sl_glass') || {}).value || '',
+      glassStatus: (row.querySelector('.sl_glassStatus') || {}).value || 'Available In Stock',
+      installed: !!((row.querySelector('.sl_installed') || {}).checked)
     });
   });
 
   const mirrors = [];
   document.querySelectorAll('#mirrorsContainer .repeater-row').forEach(row => {
-    const isFrameless = row.querySelector('.m_type').value.startsWith('Frameless');
-    const isNoLED = row.querySelector('.m_type').value.includes('No LED');
+    const typeVal = (row.querySelector('.m_type') || {}).value || 'Frameless (No LED)';
+    const isFrameless = typeVal.startsWith('Frameless');
+    const isNoLED = typeVal.includes('No LED');
     mirrors.push({
-      room: row.querySelector('.m_room').value,
-      type: row.querySelector('.m_type').value,
-      glassType: row.querySelector('.m_glassType').value,
-      glassStatus: row.querySelector('.m_glassStatus').value,
-      frameStatus: isFrameless ? 'N/A (Frameless)' : row.querySelector('.m_frameStatus').value,
-      frostStatus: isNoLED ? 'Frosting N/A' : row.querySelector('.m_frost').value,
-      electricStatus: isNoLED ? 'N/A (No LED)' : row.querySelector('.m_electric').value,
-      installed: row.querySelector('.m_installed').checked
+      room: (row.querySelector('.m_room') || {}).value || '',
+      type: typeVal,
+      glassType: (row.querySelector('.m_glassType') || {}).value || 'Clear Mirror',
+      glassStatus: (row.querySelector('.m_glassStatus') || {}).value || 'Available In Stock',
+      frameStatus: isFrameless ? 'N/A (Frameless)' : ((row.querySelector('.m_frameStatus') || {}).value || 'In Shop'),
+      frostStatus: isNoLED ? 'Frosting N/A' : ((row.querySelector('.m_frost') || {}).value || 'Frosting N/A'),
+      electricStatus: isNoLED ? 'N/A (No LED)' : ((row.querySelector('.m_electric') || {}).value || 'Drivers / Strips in Shop'),
+      installed: !!((row.querySelector('.m_installed') || {}).checked)
     });
   });
 
   const toughened = [];
   document.querySelectorAll('#toughenedContainer .repeater-row').forEach(row => {
     toughened.push({
-      location: row.querySelector('.tg_loc').value,
-      furnaceStatus: row.querySelector('.tg_furnace').value,
-      hwSpec: row.querySelector('.tg_hwSpec').value,
-      hwStatus: row.querySelector('.tg_hwStatus').value,
-      installed: row.querySelector('.tg_installed').checked
+      location: (row.querySelector('.tg_loc') || {}).value || '',
+      furnaceStatus: (row.querySelector('.tg_furnace') || {}).value || 'Cutouts Freeze',
+      hwSpec: (row.querySelector('.tg_hwSpec') || {}).value || '',
+      hwStatus: (row.querySelector('.tg_hwStatus') || {}).value || 'In Stock (SS)',
+      installed: !!((row.querySelector('.tg_installed') || {}).checked)
     });
   });
 
   const flatGlass = [];
   document.querySelectorAll('#flatGlassContainer .repeater-row').forEach(row => {
     flatGlass.push({
-      location: row.querySelector('.fg_loc').value,
-      glassSpec: row.querySelector('.fg_glassSpec').value,
-      availStatus: row.querySelector('.fg_availStatus').value,
-      processStatus: row.querySelector('.fg_processStatus').value,
-      installed: row.querySelector('.fg_installed').checked
+      location: (row.querySelector('.fg_loc') || {}).value || '',
+      glassSpec: (row.querySelector('.fg_glassSpec') || {}).value || '',
+      availStatus: (row.querySelector('.fg_availStatus') || {}).value || 'In Stock',
+      processStatus: (row.querySelector('.fg_processStatus') || {}).value || 'In Cutting',
+      installed: !!((row.querySelector('.fg_installed') || {}).checked)
     });
   });
 
   return {
     id: activeSiteId || Date.now(),
-    client: document.getElementById('inp_clientName').value.trim(),
-    arch: document.getElementById('inp_archName').value.trim(),
-    targetDate: document.getElementById('inp_targetDate').value,
-    approved: document.getElementById('inp_gateApproval').checked,
-    measured: document.getElementById('inp_gateMeasurements').checked,
+    client: getVal('inp_clientName'),
+    arch: getVal('inp_archName'),
+    targetDate: getVal('inp_targetDate'),
+    approved: getCheck('inp_gateApproval'),
+    measured: getCheck('inp_gateMeasurements'),
     updatedAt: Date.now(),
     shutters,
     slimline,
@@ -1326,12 +1428,15 @@ function saveActiveSite() {
   const payload = buildSitePayloadFromForm();
   if (!payload.client) {
     alert("Please enter a Client Name or Site Identifier.");
+    const input = document.getElementById('inp_clientName');
+    if (input) input.focus();
     return;
   }
 
   if (activeSiteId) {
     const idx = projectSites.findIndex(s => s.id === activeSiteId);
     if (idx !== -1) projectSites[idx] = payload;
+    else projectSites.unshift(payload);
   } else {
     projectSites.unshift(payload);
   }
@@ -1345,7 +1450,10 @@ function saveActiveSite() {
 }
 
 function deleteCurrentSite() {
-  if (!activeSiteId) return;
+  if (!activeSiteId) {
+    closeEditorModal();
+    return;
+  }
   if (confirm("Permanently delete this site tracker?")) {
     projectSites = projectSites.filter(s => s.id !== activeSiteId);
     saveToStorage();
@@ -1358,7 +1466,7 @@ function deleteCurrentSite() {
 }
 
 // ==========================================
-// STATION / RAILWAY BOARD OPERATIONS
+// STATION SCREEN LOGIC
 // ==========================================
 function launchStationDisplay() {
   document.getElementById('stationView').classList.add('active');
@@ -1482,7 +1590,7 @@ function renderSpotlightCard() {
   const instPct = auto.totalItems > 0 ? Math.round((auto.installedItems / auto.totalItems) * 100) : 0;
 
   card.innerHTML = `
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
       <div>
         <div style="font-size:11px; font-weight:800; color:#fbbf24; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:4px;">
           Spotlight Job (${spotlightIndex + 1} of ${projectSites.length}) • Tap to View Sheet
