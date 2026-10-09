@@ -23,6 +23,8 @@
     --c-vendor-txt: #b45309;
     --c-delayed-bg: #fee2e2;
     --c-delayed-txt: #b91c1c;
+    --c-delivered-bg: #e0f2fe;
+    --c-delivered-txt: #0284c7;
     --c-installed-bg: #e0e7ff;
     --c-installed-txt: #4338ca;
     --c-neutral-bg: #f1f5f9;
@@ -79,12 +81,13 @@
   
   .auto-stage-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px; margin-bottom: 8px; width: 100%; }
   
-  /* Dual Progress Bars */
+  /* Tri-Stage Progress Bars */
   .progress-wrap { margin: 8px 0; display: flex; flex-direction: column; gap: 6px; }
   .progress-row { display: flex; flex-direction: column; gap: 2px; }
   .progress-meta { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); font-weight: 600; }
   .progress-bar-bg { background: #e2e8f0; height: 5px; border-radius: 3px; overflow: hidden; }
   .progress-bar-fill-shop { background: var(--c-ready-txt); height: 100%; transition: width 0.3s ease; }
+  .progress-bar-fill-del { background: var(--c-delivered-txt); height: 100%; transition: width 0.3s ease; }
   .progress-bar-fill-site { background: var(--c-installed-txt); height: 100%; transition: width 0.3s ease; }
 
   .gates-row { display: flex; gap: 10px; padding: 6px 0; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); margin-bottom: 10px; font-size: 11px; flex-wrap: wrap; }
@@ -102,10 +105,11 @@
   .badge-processing { background: var(--c-process-bg); color: var(--c-process-txt); }
   .badge-vendor { background: var(--c-vendor-bg); color: var(--c-vendor-txt); }
   .badge-delayed { background: var(--c-delayed-bg); color: var(--c-delayed-txt); }
+  .badge-delivered { background: var(--c-delivered-bg); color: var(--c-delivered-txt); }
   .badge-installed { background: var(--c-installed-bg); color: var(--c-installed-txt); }
   .badge-neutral { background: var(--c-neutral-bg); color: var(--c-neutral-txt); }
 
-  /* Modals — High z-index to stay above Station mode */
+  /* Modals — z-index 3000 ensures display above Station mode */
   .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.8); backdrop-filter: blur(2px); z-index: 3000; align-items: center; justify-content: center; padding: 8px; }
   .modal-overlay.active { display: flex; }
   .modal-window { background: var(--surface); width: 100%; max-width: 1050px; max-height: 92vh; border-radius: 10px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
@@ -128,16 +132,17 @@
   .repeater-row { display: grid; gap: 6px; align-items: center; background: #f8fafc; padding: 8px; border-radius: 5px; margin-bottom: 6px; border: 1px solid var(--border-light); font-size: 12px; }
   .repeater-row input, .repeater-row select { font-size: 12px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 4px; background: #fff; width: 100%; min-height: 36px; }
   .repeater-bottom-row { display: contents; }
+  .delivered-toggle { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; cursor: pointer; color: var(--c-delivered-txt); background: var(--c-delivered-bg); padding: 6px 10px; border-radius: 4px; white-space: nowrap; }
   .installed-toggle { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; cursor: pointer; color: var(--c-installed-txt); background: var(--c-installed-bg); padding: 6px 10px; border-radius: 4px; white-space: nowrap; }
 
-  .row-shutter, .row-slimline { grid-template-columns: 1.1fr 1fr 1fr 1.1fr 1.1fr auto auto; }
-  .row-mirror { grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr auto auto; }
-  .row-toughened { grid-template-columns: 1.1fr 1fr 1.1fr 1fr auto auto; }
-  .row-flatglass { grid-template-columns: 1.1fr 1.1fr 1fr 1.1fr auto auto; }
+  .row-shutter, .row-slimline { grid-template-columns: 1.1fr 1fr 1fr 1.1fr 1.1fr auto auto auto; }
+  .row-mirror { grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr auto auto auto; }
+  .row-toughened { grid-template-columns: 1.1fr 1fr 1.1fr 1fr auto auto auto; }
+  .row-flatglass { grid-template-columns: 1.1fr 1fr 1.1fr 1fr auto auto auto; }
 
   .btn-remove-row { color: var(--c-delayed-txt); background: none; border: none; font-size: 16px; cursor: pointer; padding: 0 4px; font-weight: bold; }
 
-  /* Mobile Layout Adaptation (< 768px) */
+  /* Mobile Layout (< 768px) */
   @media (max-width: 768px) {
     #managerView { padding: 8px; }
     .sites-grid { grid-template-columns: 1fr; }
@@ -148,8 +153,9 @@
     
     .repeater-row { display: flex; flex-direction: column; align-items: stretch; gap: 8px; padding: 12px; background: #f8fafc; }
     .repeater-row input, .repeater-row select { font-size: 14px; min-height: 40px; }
-    .repeater-bottom-row { display: flex; justify-content: space-between; align-items: center; padding-top: 4px; width: 100%; }
-    .installed-toggle { padding: 8px 12px; font-size: 12px; }
+    .repeater-bottom-row { display: flex; justify-content: space-between; align-items: center; padding-top: 4px; width: 100%; gap: 6px; flex-wrap: wrap; }
+    .delivered-toggle { padding: 8px 10px; font-size: 12px; }
+    .installed-toggle { padding: 8px 10px; font-size: 12px; }
     .btn-remove-row { padding: 6px 12px; background: #fee2e2; border-radius: 4px; }
   }
 
@@ -239,8 +245,8 @@
           <th style="width: 25%;">Project / Destination</th>
           <th style="width: 15%;">Architect</th>
           <th style="width: 15%;">Target ETA</th>
-          <th style="width: 15%;">Readiness (Fab / Site)</th>
-          <th style="width: 30%;">Depot Status / Critical Action</th>
+          <th style="width: 18%;">Readiness (Fab / Del / Site)</th>
+          <th style="width: 27%;">Depot Status / Critical Action</th>
         </tr>
       </thead>
       <tbody id="stationTableBody"></tbody>
@@ -368,7 +374,6 @@
 </div>
 
 <script>
-// Safe text fallback helper
 function str(val, fallback) {
   if (val !== undefined && val !== null && String(val).trim() !== '') {
     return String(val);
@@ -405,6 +410,7 @@ function normalizeSiteData(rawList) {
           glassSpec: str(sh.thickness, 'Glass Shelf'),
           availStatus: isStock ? 'In Stock' : 'Ordered at Plant / Supplier',
           processStatus: isReady ? 'Ready for Dispatch' : (sh.status === 'Plant Order Placed' ? 'In Cutting' : str(sh.status, 'In Edge Polishing')),
+          delivered: (sh.delivered === true || sh.installed === true),
           installed: (sh.installed === true)
         };
       });
@@ -417,6 +423,7 @@ function normalizeSiteData(rawList) {
         profileStatus: str(item.profileStatus, str(item.frameStatus, 'Available In Shop')),
         glass: str(item.glass, ''),
         glassStatus: str(item.glassStatus, 'Available In Stock'),
+        delivered: (item.delivered === true || item.installed === true),
         installed: (item.installed === true)
       };
     });
@@ -428,6 +435,7 @@ function normalizeSiteData(rawList) {
         profileStatus: str(item.profileStatus, 'Available In Shop'),
         glass: str(item.glass, ''),
         glassStatus: str(item.glassStatus, 'Available In Stock'),
+        delivered: (item.delivered === true || item.installed === true),
         installed: (item.installed === true)
       };
     });
@@ -444,6 +452,7 @@ function normalizeSiteData(rawList) {
         frameStatus: isFrameless ? 'N/A (Frameless)' : str(item.frameStatus, 'In Shop'),
         frostStatus: isNoLED ? 'Frosting N/A' : str(item.frostStatus, 'Frosting N/A'),
         electricStatus: isNoLED ? 'N/A (No LED)' : str(item.electricStatus, 'Drivers / Strips in Shop'),
+        delivered: (item.delivered === true || item.installed === true),
         installed: (item.installed === true)
       };
     });
@@ -454,6 +463,7 @@ function normalizeSiteData(rawList) {
         furnaceStatus: str(item.furnaceStatus, 'Cutouts Freeze'),
         hwSpec: str(item.hwSpec, ''),
         hwStatus: str(item.hwStatus, 'In Stock (SS)'),
+        delivered: (item.delivered === true || item.installed === true),
         installed: (item.installed === true)
       };
     });
@@ -464,6 +474,7 @@ function normalizeSiteData(rawList) {
         glassSpec: str(item.glassSpec, ''),
         availStatus: str(item.availStatus, 'In Stock'),
         processStatus: str(item.processStatus, 'In Cutting'),
+        delivered: (item.delivered === true || item.installed === true),
         installed: (item.installed === true)
       };
     });
@@ -498,7 +509,6 @@ var LEGACY_KEYS = [
 
 var projectSites = [];
 
-// Smart Multi-Version Loader: If v8 only has the default seed, restore user's real v7 data
 var v8Stored = localStorage.getItem('glass_ops_tracker_v8');
 var loadedActualV8 = false;
 
@@ -506,7 +516,7 @@ if (v8Stored) {
   try {
     var parsedV8 = JSON.parse(v8Stored);
     var normV8 = normalizeSiteData(parsedV8);
-    var isOnlyDummy = (normV8.length === 1 && normV8[0].id === 1728000001 && normV8[0].client.indexOf('Bunglow 42') !== -1);
+    var isOnlyDummy = (normV8.length === 1 && String(normV8[0].id) === '1728000001' && normV8[0].client.indexOf('Bunglow 42') !== -1);
     if (!isOnlyDummy && normV8.length > 0) {
       projectSites = normV8;
       loadedActualV8 = true;
@@ -544,15 +554,15 @@ if (projectSites.length === 0) {
       measured: true,
       updatedAt: Date.now() - (3 * 24 * 60 * 60 * 1000),
       shutters: [
-        { room: "Master Wardrobe", profile: "20mm Slim Black", profileStatus: "Mitre Cutting", glass: "Fluted Glass", glassStatus: "In Cutting", installed: false }
+        { room: "Master Wardrobe", profile: "20mm Slim Black", profileStatus: "Mitre Cutting", glass: "Fluted Glass", glassStatus: "In Cutting", delivered: false, installed: false }
       ],
       slimline: [],
       mirrors: [
-        { room: "Master Vanity", type: "Framed + LED", glassType: "Bronze Mirror", glassStatus: "In Edge Polishing", frameStatus: "Mitre / Assembly", frostStatus: "At Sandblaster", electricStatus: "Drivers / Strips in Shop", installed: false }
+        { room: "Master Vanity", type: "Framed + LED", glassType: "Bronze Mirror", glassStatus: "In Edge Polishing", frameStatus: "Mitre / Assembly", frostStatus: "At Sandblaster", electricStatus: "Drivers / Strips in Shop", delivered: false, installed: false }
       ],
       toughened: [],
       flatGlass: [
-        { location: "Living Dining Table Top", glassSpec: "12mm Clear Toughened Bevel", availStatus: "In Stock", processStatus: "In Edge Polishing", installed: false }
+        { location: "Living Dining Table Top", glassSpec: "12mm Clear Toughened Bevel", availStatus: "In Stock", processStatus: "In Edge Polishing", delivered: false, installed: false }
       ]
     }
   ];
@@ -626,6 +636,7 @@ function applyFilter(f, btn) {
 function computeAutoStage(site) {
   var totalItems = 0;
   var readyItems = 0;
+  var deliveredItems = 0;
   var installedItems = 0;
   var vendorBottlenecks = [];
   var inProcessingItems = [];
@@ -633,73 +644,97 @@ function computeAutoStage(site) {
   (site.shutters || []).forEach(function(sh) {
     totalItems++;
     var isReady = (sh.profileStatus === 'Ready for Dispatch' && sh.glassStatus === 'Ready for Dispatch');
+    if (sh.installed === true || sh.delivered === true) isReady = true;
     if (isReady) readyItems++;
-    if (sh.installed) installedItems++;
-    if (sh.profileStatus === 'Ordered') vendorBottlenecks.push('Profile Order: ' + str(sh.room, 'Room'));
-    if (sh.glassStatus === 'Ordered') vendorBottlenecks.push('Glass Order: ' + str(sh.room, 'Room'));
-    if (sh.glassStatus === 'Sample Sent to Arch') vendorBottlenecks.push('Sample at Arch: ' + str(sh.room, 'Room'));
-    if (!isReady && sh.profileStatus !== 'Ordered' && sh.glassStatus !== 'Ordered') inProcessingItems.push('Shutter: ' + str(sh.room, 'Room'));
+    if (sh.delivered === true || sh.installed === true) deliveredItems++;
+    if (sh.installed === true) installedItems++;
+
+    if (!sh.installed && !sh.delivered) {
+      if (sh.profileStatus === 'Ordered') vendorBottlenecks.push('Profile Order: ' + str(sh.room, 'Room'));
+      if (sh.glassStatus === 'Ordered') vendorBottlenecks.push('Glass Order: ' + str(sh.room, 'Room'));
+      if (sh.glassStatus === 'Sample Sent to Arch') vendorBottlenecks.push('Sample at Arch: ' + str(sh.room, 'Room'));
+      if (!isReady && sh.profileStatus !== 'Ordered' && sh.glassStatus !== 'Ordered') inProcessingItems.push('Shutter: ' + str(sh.room, 'Room'));
+    }
   });
 
   (site.slimline || []).forEach(function(sl) {
     totalItems++;
-    // FIXED: Uses sl.glassStatus instead of undeclared sh.glassStatus
     var isReady = (sl.profileStatus === 'Ready for Dispatch' && sl.glassStatus === 'Ready for Dispatch');
+    if (sl.installed === true || sl.delivered === true) isReady = true;
     if (isReady) readyItems++;
-    if (sl.installed) installedItems++;
-    if (sl.profileStatus === 'Ordered') vendorBottlenecks.push('Slimline Frame: ' + str(sl.location, 'Area'));
-    if (sl.glassStatus === 'Ordered') vendorBottlenecks.push('Slimline Glass: ' + str(sl.location, 'Area'));
-    if (sl.glassStatus === 'Sample Sent to Arch') vendorBottlenecks.push('Sample at Arch: ' + str(sl.location, 'Area'));
-    if (!isReady && sl.profileStatus !== 'Ordered' && sl.glassStatus !== 'Ordered') inProcessingItems.push('Slimline: ' + str(sl.location, 'Area'));
+    if (sl.delivered === true || sl.installed === true) deliveredItems++;
+    if (sl.installed === true) installedItems++;
+
+    if (!sl.installed && !sl.delivered) {
+      if (sl.profileStatus === 'Ordered') vendorBottlenecks.push('Slimline Frame: ' + str(sl.location, 'Area'));
+      if (sl.glassStatus === 'Ordered') vendorBottlenecks.push('Slimline Glass: ' + str(sl.location, 'Area'));
+      if (sl.glassStatus === 'Sample Sent to Arch') vendorBottlenecks.push('Sample at Arch: ' + str(sl.location, 'Area'));
+      if (!isReady && sl.profileStatus !== 'Ordered' && sl.glassStatus !== 'Ordered') inProcessingItems.push('Slimline: ' + str(sl.location, 'Area'));
+    }
   });
 
   (site.mirrors || []).forEach(function(m) {
     totalItems++;
     var isReady = (m.glassStatus === 'Ready for Dispatch' && (m.frostStatus === 'Received Back' || m.frostStatus === 'Frosting N/A'));
+    if (m.installed === true || m.delivered === true) isReady = true;
     if (isReady) readyItems++;
-    if (m.installed) installedItems++;
-    if (m.glassStatus === 'Ordered') vendorBottlenecks.push('Mirror Glass: ' + str(m.room, 'Vanity'));
-    if (m.frostStatus === 'At Sandblaster') vendorBottlenecks.push('Sandblaster: ' + str(m.room, 'Vanity'));
-    if (m.frameStatus === 'Ordered') vendorBottlenecks.push('Mirror Frame: ' + str(m.room, 'Vanity'));
-    if (!isReady) inProcessingItems.push('Mirror: ' + str(m.room, 'Vanity'));
+    if (m.delivered === true || m.installed === true) deliveredItems++;
+    if (m.installed === true) installedItems++;
+
+    if (!m.installed && !m.delivered) {
+      if (m.glassStatus === 'Ordered') vendorBottlenecks.push('Mirror Glass: ' + str(m.room, 'Vanity'));
+      if (m.frostStatus === 'At Sandblaster') vendorBottlenecks.push('Sandblaster: ' + str(m.room, 'Vanity'));
+      if (m.frameStatus === 'Ordered') vendorBottlenecks.push('Mirror Frame: ' + str(m.room, 'Vanity'));
+      if (!isReady) inProcessingItems.push('Mirror: ' + str(m.room, 'Vanity'));
+    }
   });
 
   (site.toughened || []).forEach(function(tg) {
     totalItems++;
     var isReady = (tg.furnaceStatus === 'Dispatched to Site' && (tg.hwStatus === 'Received at Shop' || tg.hwStatus === 'In Stock (SS)'));
+    if (tg.installed === true || tg.delivered === true) isReady = true;
     if (isReady) readyItems++;
-    if (tg.installed) installedItems++;
-    if (tg.furnaceStatus === 'PO at Plant') vendorBottlenecks.push('Tempering: ' + str(tg.location, 'Partition'));
-    if (tg.hwStatus === 'Procurement Ordered') vendorBottlenecks.push('Hardware: ' + str(tg.location, 'Partition'));
-    if (!isReady) inProcessingItems.push('Toughened: ' + str(tg.location, 'Partition'));
+    if (tg.delivered === true || tg.installed === true) deliveredItems++;
+    if (tg.installed === true) installedItems++;
+
+    if (!tg.installed && !tg.delivered) {
+      if (tg.furnaceStatus === 'PO at Plant') vendorBottlenecks.push('Tempering: ' + str(tg.location, 'Partition'));
+      if (tg.hwStatus === 'Procurement Ordered') vendorBottlenecks.push('Hardware: ' + str(tg.location, 'Partition'));
+      if (!isReady) inProcessingItems.push('Toughened: ' + str(tg.location, 'Partition'));
+    }
   });
 
   (site.flatGlass || []).forEach(function(fg) {
     totalItems++;
     var isReady = (fg.processStatus === 'Ready for Dispatch');
+    if (fg.installed === true || fg.delivered === true) isReady = true;
     if (isReady) readyItems++;
-    if (fg.installed) installedItems++;
-    if (fg.availStatus && String(fg.availStatus).indexOf('Ordered') !== -1) vendorBottlenecks.push('Glass Order: ' + str(fg.location, 'Item'));
-    if (!isReady) inProcessingItems.push('Flat Glass: ' + str(fg.location, 'Item'));
+    if (fg.delivered === true || fg.installed === true) deliveredItems++;
+    if (fg.installed === true) installedItems++;
+
+    if (!fg.installed && !fg.delivered) {
+      if (fg.availStatus && String(fg.availStatus).indexOf('Ordered') !== -1) vendorBottlenecks.push('Glass Order: ' + str(fg.location, 'Item'));
+      if (!isReady) inProcessingItems.push('Flat Glass: ' + str(fg.location, 'Item'));
+    }
   });
 
   if (!site.measured) {
-    return { stageKey: 'delayed', label: '🔴 Gate: Final Measurements Pending', colorClass: 'badge-delayed', borderClass: 'border-delayed', stationBadge: 'color: #f87171', bottleneck: 'Laser measurements not yet locked', totalItems: totalItems, readyItems: readyItems, installedItems: installedItems };
+    return { stageKey: 'delayed', label: '🔴 Gate: Final Measurements Pending', colorClass: 'badge-delayed', borderClass: 'border-delayed', stationBadge: 'color: #f87171', bottleneck: 'Laser measurements not yet locked', totalItems: totalItems, readyItems: readyItems, deliveredItems: deliveredItems, installedItems: installedItems };
   }
   if (!site.approved) {
-    return { stageKey: 'delayed', label: '🔴 Gate: Drawings Awaiting Approval', colorClass: 'badge-delayed', borderClass: 'border-delayed', stationBadge: 'color: #f87171', bottleneck: 'Architect drawing sign-off pending', totalItems: totalItems, readyItems: readyItems, installedItems: installedItems };
+    return { stageKey: 'delayed', label: '🔴 Gate: Drawings Awaiting Approval', colorClass: 'badge-delayed', borderClass: 'border-delayed', stationBadge: 'color: #f87171', bottleneck: 'Architect drawing sign-off pending', totalItems: totalItems, readyItems: readyItems, deliveredItems: deliveredItems, installedItems: installedItems };
   }
 
   if (totalItems === 0) {
-    return { stageKey: 'processing', label: '⚪ Scope Definition Pending', colorClass: 'badge-neutral', borderClass: '', stationBadge: 'color: #9ca3af', bottleneck: 'No scopes added yet', totalItems: totalItems, readyItems: readyItems, installedItems: installedItems };
+    return { stageKey: 'processing', label: '⚪ Scope Definition Pending', colorClass: 'badge-neutral', borderClass: '', stationBadge: 'color: #9ca3af', bottleneck: 'No scopes added yet', totalItems: totalItems, readyItems: readyItems, deliveredItems: deliveredItems, installedItems: installedItems };
   }
 
   if (installedItems === totalItems && totalItems > 0) {
-    return { stageKey: 'ready', label: '🟢 100% Installed & Signed Off', colorClass: 'badge-ready', borderClass: 'border-ready', stationBadge: 'color: #34d399', bottleneck: 'All components installed and handed over', totalItems: totalItems, readyItems: readyItems, installedItems: installedItems };
+    return { stageKey: 'ready', label: '🟢 100% Installed & Signed Off', colorClass: 'badge-ready', borderClass: 'border-ready', stationBadge: 'color: #34d399', bottleneck: 'All components installed and handed over', totalItems: totalItems, readyItems: readyItems, deliveredItems: deliveredItems, installedItems: installedItems };
   }
 
   if (readyItems === totalItems && totalItems > 0) {
-    return { stageKey: 'installing', label: '🟣 Shop 100% Ready • Site Fitting (' + installedItems + '/' + totalItems + ')', colorClass: 'badge-installed', borderClass: 'border-installing', stationBadge: 'color: #a78bfa', bottleneck: 'All fabricated; on-site installation ongoing', totalItems: totalItems, readyItems: readyItems, installedItems: installedItems };
+    return { stageKey: 'installing', label: '🟣 Shop 100% Ready • Site Fitting (' + installedItems + '/' + totalItems + ')', colorClass: 'badge-installed', borderClass: 'border-installing', stationBadge: 'color: #a78bfa', bottleneck: 'All fabricated; on-site installation ongoing', totalItems: totalItems, readyItems: readyItems, deliveredItems: deliveredItems, installedItems: installedItems };
   }
 
   if (vendorBottlenecks.length > 0) {
@@ -710,7 +745,7 @@ function computeAutoStage(site) {
       borderClass: 'border-vendor',
       stationBadge: 'color: #fbbf24',
       bottleneck: vendorBottlenecks.slice(0, 2).join(' • ') + (vendorBottlenecks.length > 2 ? ' +' + (vendorBottlenecks.length - 2) + ' more' : ''),
-      totalItems: totalItems, readyItems: readyItems, installedItems: installedItems
+      totalItems: totalItems, readyItems: readyItems, deliveredItems: deliveredItems, installedItems: installedItems
     };
   }
 
@@ -721,7 +756,7 @@ function computeAutoStage(site) {
     borderClass: 'border-processing',
     stationBadge: 'color: #60a5fa',
     bottleneck: inProcessingItems.slice(0, 2).join(' • ') || 'Materials undergoing cutting/assembly',
-    totalItems: totalItems, readyItems: readyItems, installedItems: installedItems
+    totalItems: totalItems, readyItems: readyItems, deliveredItems: deliveredItems, installedItems: installedItems
   };
 }
 
@@ -783,11 +818,14 @@ function renderDashboard() {
     var microCards = [];
 
     (site.shutters || []).forEach(function(sh) {
+      var badges = '';
+      if (sh.delivered) badges += '<span class="status-pill badge-delivered">🚚 Del</span>';
+      if (sh.installed) badges += '<span class="status-pill badge-installed">✓ Inst</span>';
       microCards.push(
         '<div class="item-micro-card">' +
           '<div class="item-micro-header">' +
             '<span>Shutter: ' + str(sh.room, 'Room') + '</span>' +
-            (sh.installed ? '<span class="status-pill badge-installed">✓ Installed</span>' : '') +
+            '<div style="display:flex; gap:3px;">' + badges + '</div>' +
           '</div>' +
           '<div class="item-badge-flex">' +
             '<span class="status-pill ' + getStatusClass(sh.profileStatus) + '">Prof: ' + sh.profileStatus + '</span>' +
@@ -798,11 +836,14 @@ function renderDashboard() {
     });
 
     (site.slimline || []).forEach(function(sl) {
+      var badges = '';
+      if (sl.delivered) badges += '<span class="status-pill badge-delivered">🚚 Del</span>';
+      if (sl.installed) badges += '<span class="status-pill badge-installed">✓ Inst</span>';
       microCards.push(
         '<div class="item-micro-card">' +
           '<div class="item-micro-header">' +
             '<span>Slimline: ' + str(sl.location, 'Area') + '</span>' +
-            (sl.installed ? '<span class="status-pill badge-installed">✓ Installed</span>' : '') +
+            '<div style="display:flex; gap:3px;">' + badges + '</div>' +
           '</div>' +
           '<div class="item-badge-flex">' +
             '<span class="status-pill ' + getStatusClass(sl.profileStatus) + '">Prof: ' + sl.profileStatus + '</span>' +
@@ -813,11 +854,14 @@ function renderDashboard() {
     });
 
     (site.mirrors || []).forEach(function(m) {
+      var badges = '';
+      if (m.delivered) badges += '<span class="status-pill badge-delivered">🚚 Del</span>';
+      if (m.installed) badges += '<span class="status-pill badge-installed">✓ Inst</span>';
       microCards.push(
         '<div class="item-micro-card">' +
           '<div class="item-micro-header">' +
             '<span>Mirror: ' + str(m.room, 'Vanity') + ' (' + m.glassType + ')</span>' +
-            (m.installed ? '<span class="status-pill badge-installed">✓ Installed</span>' : '') +
+            '<div style="display:flex; gap:3px;">' + badges + '</div>' +
           '</div>' +
           '<div class="item-badge-flex">' +
             '<span class="status-pill ' + getStatusClass(m.glassStatus) + '">Glass: ' + m.glassStatus + '</span>' +
@@ -828,11 +872,14 @@ function renderDashboard() {
     });
 
     (site.toughened || []).forEach(function(tg) {
+      var badges = '';
+      if (tg.delivered) badges += '<span class="status-pill badge-delivered">🚚 Del</span>';
+      if (tg.installed) badges += '<span class="status-pill badge-installed">✓ Inst</span>';
       microCards.push(
         '<div class="item-micro-card">' +
           '<div class="item-micro-header">' +
             '<span>Toughened: ' + str(tg.location, 'Partition') + '</span>' +
-            (tg.installed ? '<span class="status-pill badge-installed">✓ Installed</span>' : '') +
+            '<div style="display:flex; gap:3px;">' + badges + '</div>' +
           '</div>' +
           '<div class="item-badge-flex">' +
             '<span class="status-pill ' + getStatusClass(tg.furnaceStatus) + '">Plant: ' + tg.furnaceStatus + '</span>' +
@@ -843,11 +890,14 @@ function renderDashboard() {
     });
 
     (site.flatGlass || []).forEach(function(fg) {
+      var badges = '';
+      if (fg.delivered) badges += '<span class="status-pill badge-delivered">🚚 Del</span>';
+      if (fg.installed) badges += '<span class="status-pill badge-installed">✓ Inst</span>';
       microCards.push(
         '<div class="item-micro-card">' +
           '<div class="item-micro-header">' +
             '<span>Flat Glass: ' + str(fg.location, 'Panel') + '</span>' +
-            (fg.installed ? '<span class="status-pill badge-installed">✓ Installed</span>' : '') +
+            '<div style="display:flex; gap:3px;">' + badges + '</div>' +
           '</div>' +
           '<div class="item-badge-flex">' +
             '<span class="status-pill ' + getStatusClass(fg.availStatus) + '">' + fg.availStatus + '</span>' +
@@ -858,16 +908,17 @@ function renderDashboard() {
     });
 
     var fabPct = autoStage.totalItems > 0 ? Math.round((autoStage.readyItems / autoStage.totalItems) * 100) : 0;
+    var delPct = autoStage.totalItems > 0 ? Math.round((autoStage.deliveredItems / autoStage.totalItems) * 100) : 0;
     var instPct = autoStage.totalItems > 0 ? Math.round((autoStage.installedItems / autoStage.totalItems) * 100) : 0;
 
     return (
-      '<div class="site-card ' + autoStage.borderClass + '" onclick="openInspectModal(' + site.id + ')">' +
+      '<div class="site-card ' + autoStage.borderClass + '" onclick="openInspectModal(\'' + site.id + '\')">' +
         '<div class="card-top">' +
           '<div>' +
             '<div class="card-client">' + site.client + '</div>' +
             '<div class="card-arch">' + (site.arch ? 'Arch: ' + site.arch : 'Direct Client') + '</div>' +
           '</div>' +
-          '<div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">' +
+          '<div style="display:flex; flex-direction:column-reverse; align-items:flex-end; gap:4px;">' +
             '<span class="status-pill ' + urgency.badgeClass + '">' + urgency.text + '</span>' +
             (isStagnant ? '<span class="status-pill badge-delayed" title="No updates in ' + stagnantDays + ' days!">⚠️ Idle ' + stagnantDays + 'd</span>' : '') +
           '</div>' +
@@ -902,6 +953,16 @@ function renderDashboard() {
 
           '<div class="progress-row">' +
             '<div class="progress-meta">' +
+              '<span style="color:var(--c-delivered-txt);">Delivered at Site</span>' +
+              '<span style="color:var(--c-delivered-txt);">' + autoStage.deliveredItems + ' / ' + autoStage.totalItems + ' Delivered (' + delPct + '%)</span>' +
+            '</div>' +
+            '<div class="progress-bar-bg">' +
+              '<div class="progress-bar-fill-del" style="width: ' + delPct + '%"></div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="progress-row">' +
+            '<div class="progress-meta">' +
               '<span style="color:var(--c-installed-txt);">Site Installed</span>' +
               '<span style="color:var(--c-installed-txt);">' + autoStage.installedItems + ' / ' + autoStage.totalItems + ' Fitted (' + instPct + '%)</span>' +
             '</div>' +
@@ -923,7 +984,7 @@ function renderDashboard() {
 // Read-Only Job Sheet Modal (Step 1)
 function openInspectModal(siteId) {
   activeSiteId = siteId;
-  var site = projectSites.find(function(s) { return s.id === siteId; });
+  var site = projectSites.find(function(s) { return String(s.id) === String(siteId); });
   if (!site) return;
 
   var auto = computeAutoStage(site);
@@ -943,6 +1004,14 @@ function openInspectModal(siteId) {
     '</div>'
   );
 
+  function getBadges(item) {
+    var out = '';
+    if (item.delivered) out += '<span class="status-pill badge-delivered">🚚 Delivered</span>';
+    if (item.installed) out += '<span class="status-pill badge-installed">✓ Installed</span>';
+    if (!item.delivered && !item.installed) out += '<span class="status-pill badge-neutral">Site Pending</span>';
+    return out;
+  }
+
   if ((site.shutters || []).length > 0) {
     bodyHtml += (
       '<div class="jobsheet-scope-block">' +
@@ -952,7 +1021,7 @@ function openInspectModal(siteId) {
             '<div class="jobsheet-item-card">' +
               '<div class="jobsheet-item-title">' +
                 '<span>' + str(sh.room, 'Room') + '</span>' +
-                (sh.installed ? '<span class="status-pill badge-installed">✓ Installed</span>' : '<span class="status-pill badge-neutral">Site Pending</span>') +
+                '<div style="display:flex; gap:4px;">' + getBadges(sh) + '</div>' +
               '</div>' +
               '<div><strong>Profile:</strong> ' + str(sh.profile, 'Standard') + ' • <span class="status-pill ' + getStatusClass(sh.profileStatus) + '">' + sh.profileStatus + '</span></div>' +
               '<div><strong>Glass:</strong> ' + str(sh.glass, 'Glass Spec') + ' • <span class="status-pill ' + getStatusClass(sh.glassStatus) + '">' + sh.glassStatus + '</span></div>' +
@@ -972,7 +1041,7 @@ function openInspectModal(siteId) {
             '<div class="jobsheet-item-card">' +
               '<div class="jobsheet-item-title">' +
                 '<span>' + str(sl.location, 'Area') + '</span>' +
-                (sl.installed ? '<span class="status-pill badge-installed">✓ Installed</span>' : '<span class="status-pill badge-neutral">Site Pending</span>') +
+                '<div style="display:flex; gap:4px;">' + getBadges(sl) + '</div>' +
               '</div>' +
               '<div><strong>Profile:</strong> ' + str(sl.profile, 'Slimline') + ' • <span class="status-pill ' + getStatusClass(sl.profileStatus) + '">' + sl.profileStatus + '</span></div>' +
               '<div><strong>Glass:</strong> ' + str(sl.glass, 'Glass Spec') + ' • <span class="status-pill ' + getStatusClass(sl.glassStatus) + '">' + sl.glassStatus + '</span></div>' +
@@ -992,7 +1061,7 @@ function openInspectModal(siteId) {
             '<div class="jobsheet-item-card">' +
               '<div class="jobsheet-item-title">' +
                 '<span>' + str(m.room, 'Vanity') + ' (' + m.type + ')</span>' +
-                (m.installed ? '<span class="status-pill badge-installed">✓ Installed</span>' : '<span class="status-pill badge-neutral">Site Pending</span>') +
+                '<div style="display:flex; gap:4px;">' + getBadges(m) + '</div>' +
               '</div>' +
               '<div><strong>Mirror Glass:</strong> ' + m.glassType + ' • <span class="status-pill ' + getStatusClass(m.glassStatus) + '">' + m.glassStatus + '</span></div>' +
               (m.frameStatus !== 'N/A (Frameless)' ? '<div><strong>Frame:</strong> <span class="status-pill ' + getStatusClass(m.frameStatus) + '">' + m.frameStatus + '</span></div>' : '') +
@@ -1014,7 +1083,7 @@ function openInspectModal(siteId) {
             '<div class="jobsheet-item-card">' +
               '<div class="jobsheet-item-title">' +
                 '<span>' + str(tg.location, 'Partition') + '</span>' +
-                (tg.installed ? '<span class="status-pill badge-installed">✓ Installed</span>' : '<span class="status-pill badge-neutral">Site Pending</span>') +
+                '<div style="display:flex; gap:4px;">' + getBadges(tg) + '</div>' +
               '</div>' +
               '<div><strong>Glass & Furnace:</strong> ' + str(tg.glassSpec, '10mm Clear') + ' • <span class="status-pill ' + getStatusClass(tg.furnaceStatus) + '">' + tg.furnaceStatus + '</span></div>' +
               '<div><strong>Hardware Kit:</strong> ' + str(tg.hwSpec, 'Hardware') + ' • <span class="status-pill ' + getStatusClass(tg.hwStatus) + '">' + tg.hwStatus + '</span></div>' +
@@ -1034,7 +1103,7 @@ function openInspectModal(siteId) {
             '<div class="jobsheet-item-card">' +
               '<div class="jobsheet-item-title">' +
                 '<span>' + str(fg.location, 'Location') + '</span>' +
-                (fg.installed ? '<span class="status-pill badge-installed">✓ Installed</span>' : '<span class="status-pill badge-neutral">Site Pending</span>') +
+                '<div style="display:flex; gap:4px;">' + getBadges(fg) + '</div>' +
               '</div>' +
               '<div><strong>Glass Spec:</strong> ' + str(fg.glassSpec, 'Float / Toughened') + '</div>' +
               '<div><strong>Procurement:</strong> <span class="status-pill ' + getStatusClass(fg.availStatus) + '">' + fg.availStatus + '</span> • <strong>Processing:</strong> <span class="status-pill ' + getStatusClass(fg.processStatus) + '">' + fg.processStatus + '</span></div>' +
@@ -1054,8 +1123,12 @@ function closeInspectModal() {
 }
 
 function transitionToEditModal() {
-  closeInspectModal();
-  openEditorModal(activeSiteId);
+  try {
+    closeInspectModal();
+    openEditorModal(activeSiteId);
+  } catch(err) {
+    alert("Error opening editor: " + err.message);
+  }
 }
 
 // Editor Modal (Step 2)
@@ -1079,34 +1152,38 @@ function openCreateModal() {
 }
 
 function openEditorModal(siteId) {
-  activeSiteId = siteId;
-  var site = projectSites.find(function(s) { return s.id === siteId; });
-  if (!site) return;
+  try {
+    activeSiteId = siteId;
+    var site = projectSites.find(function(s) { return String(s.id) === String(siteId); });
+    if (!site) return;
 
-  document.getElementById('modalSiteTitle').innerText = 'Editing: ' + site.client;
-  document.getElementById('inp_clientName').value = site.client || '';
-  document.getElementById('inp_archName').value = site.arch || '';
-  document.getElementById('inp_targetDate').value = site.targetDate || '';
-  document.getElementById('inp_gateApproval').checked = (site.approved === true);
-  document.getElementById('inp_gateMeasurements').checked = (site.measured === true);
+    document.getElementById('modalSiteTitle').innerText = 'Editing: ' + site.client;
+    document.getElementById('inp_clientName').value = site.client || '';
+    document.getElementById('inp_archName').value = site.arch || '';
+    document.getElementById('inp_targetDate').value = site.targetDate || '';
+    document.getElementById('inp_gateApproval').checked = (site.approved === true);
+    document.getElementById('inp_gateMeasurements').checked = (site.measured === true);
 
-  document.getElementById('profileShuttersContainer').innerHTML = '';
-  (site.shutters || []).forEach(function(row) { addProfileShutterRow(row); });
+    document.getElementById('profileShuttersContainer').innerHTML = '';
+    (site.shutters || []).forEach(function(row) { addProfileShutterRow(row, true); });
 
-  document.getElementById('slimlineContainer').innerHTML = '';
-  (site.slimline || []).forEach(function(row) { addSlimlineRow(row); });
+    document.getElementById('slimlineContainer').innerHTML = '';
+    (site.slimline || []).forEach(function(row) { addSlimlineRow(row, true); });
 
-  document.getElementById('mirrorsContainer').innerHTML = '';
-  (site.mirrors || []).forEach(function(row) { addMirrorRow(row); });
+    document.getElementById('mirrorsContainer').innerHTML = '';
+    (site.mirrors || []).forEach(function(row) { addMirrorRow(row, true); });
 
-  document.getElementById('toughenedContainer').innerHTML = '';
-  (site.toughened || []).forEach(function(row) { addToughenedRow(row); });
+    document.getElementById('toughenedContainer').innerHTML = '';
+    (site.toughened || []).forEach(function(row) { addToughenedRow(row, true); });
 
-  document.getElementById('flatGlassContainer').innerHTML = '';
-  (site.flatGlass || []).forEach(function(row) { addFlatGlassRow(row); });
+    document.getElementById('flatGlassContainer').innerHTML = '';
+    (site.flatGlass || []).forEach(function(row) { addFlatGlassRow(row, true); });
 
-  refreshModalAutoStatus();
-  document.getElementById('editorModal').classList.add('active');
+    refreshModalAutoStatus();
+    document.getElementById('editorModal').classList.add('active');
+  } catch(err) {
+    alert("Error loading project for editing: " + err.message);
+  }
 }
 
 function closeEditorModal() {
@@ -1158,7 +1235,18 @@ function checkProfileReadyBeforeGlassProcessing(glassSelectElem, profileSelectCl
   refreshModalAutoStatus();
 }
 
-function addProfileShutterRow(data) {
+function onInstalledToggle(cb) {
+  if (cb && cb.checked) {
+    var row = cb.closest('.repeater-row');
+    if (row) {
+      var delInput = row.querySelector('.ps_delivered, .sl_delivered, .m_delivered, .tg_delivered, .fg_delivered');
+      if (delInput) delInput.checked = true;
+    }
+  }
+  refreshModalAutoStatus();
+}
+
+function addProfileShutterRow(data, skipAutoRefresh) {
   data = data || {};
   var container = document.getElementById('profileShuttersContainer');
   var div = document.createElement('div');
@@ -1180,17 +1268,20 @@ function addProfileShutterRow(data) {
       getGlassStatusOptionsHTML(initialGlass) +
     '</select>' +
     '<div class="repeater-bottom-row">' +
+      '<label class="delivered-toggle">' +
+        '<input type="checkbox" class="ps_delivered" ' + (data.delivered ? 'checked' : '') + ' onchange="refreshModalAutoStatus()"> Delivered' +
+      '</label>' +
       '<label class="installed-toggle">' +
-        '<input type="checkbox" class="ps_installed" ' + (data.installed ? 'checked' : '') + ' onchange="refreshModalAutoStatus()"> Installed' +
+        '<input type="checkbox" class="ps_installed" ' + (data.installed ? 'checked' : '') + ' onchange="onInstalledToggle(this)"> Installed' +
       '</label>' +
       '<button type="button" class="btn-remove-row" onclick="this.closest(\'.repeater-row\').remove(); refreshModalAutoStatus();">✕</button>' +
     '</div>'
   );
   container.appendChild(div);
-  refreshModalAutoStatus();
+  if (!skipAutoRefresh) refreshModalAutoStatus();
 }
 
-function addSlimlineRow(data) {
+function addSlimlineRow(data, skipAutoRefresh) {
   data = data || {};
   var container = document.getElementById('slimlineContainer');
   var div = document.createElement('div');
@@ -1208,19 +1299,21 @@ function addSlimlineRow(data) {
       '<option value="Ready for Dispatch" ' + (data.profileStatus === 'Ready for Dispatch' ? 'selected' : '') + '>Prof: Ready for Dispatch</option>' +
     '</select>' +
     '<input type="text" placeholder="Glass Spec (e.g. 8mm Tinted / Fluted)" value="' + str(data.glass, '') + '" class="sl_glass">' +
-    // FIXED: Class parameter targets .sl_profileStatus
     '<select class="sl_glassStatus" data-prev="' + initialGlass + '" onchange="checkProfileReadyBeforeGlassProcessing(this, \'.sl_profileStatus\')">' +
       getGlassStatusOptionsHTML(initialGlass) +
     '</select>' +
     '<div class="repeater-bottom-row">' +
+      '<label class="delivered-toggle">' +
+        '<input type="checkbox" class="sl_delivered" ' + (data.delivered ? 'checked' : '') + ' onchange="refreshModalAutoStatus()"> Delivered' +
+      '</label>' +
       '<label class="installed-toggle">' +
-        '<input type="checkbox" class="sl_installed" ' + (data.installed ? 'checked' : '') + ' onchange="refreshModalAutoStatus()"> Installed' +
+        '<input type="checkbox" class="sl_installed" ' + (data.installed ? 'checked' : '') + ' onchange="onInstalledToggle(this)"> Installed' +
       '</label>' +
       '<button type="button" class="btn-remove-row" onclick="this.closest(\'.repeater-row\').remove(); refreshModalAutoStatus();">✕</button>' +
     '</div>'
   );
   container.appendChild(div);
-  refreshModalAutoStatus();
+  if (!skipAutoRefresh) refreshModalAutoStatus();
 }
 
 function handleMirrorTypeChange(selectElem) {
@@ -1279,7 +1372,7 @@ function handleMirrorTypeChange(selectElem) {
   refreshModalAutoStatus();
 }
 
-function addMirrorRow(data) {
+function addMirrorRow(data, skipAutoRefresh) {
   data = data || {};
   var container = document.getElementById('mirrorsContainer');
   var div = document.createElement('div');
@@ -1327,17 +1420,20 @@ function addMirrorRow(data) {
       '<option value="LED Installation Done & Tested OK" ' + (data.electricStatus === 'LED Installation Done & Tested OK' ? 'selected' : '') + '>LED: Done & Tested OK</option>' +
     '</select>' +
     '<div class="repeater-bottom-row">' +
+      '<label class="delivered-toggle">' +
+        '<input type="checkbox" class="m_delivered" ' + (data.delivered ? 'checked' : '') + ' onchange="refreshModalAutoStatus()"> Delivered' +
+      '</label>' +
       '<label class="installed-toggle">' +
-        '<input type="checkbox" class="m_installed" ' + (data.installed ? 'checked' : '') + ' onchange="refreshModalAutoStatus()"> Installed' +
+        '<input type="checkbox" class="m_installed" ' + (data.installed ? 'checked' : '') + ' onchange="onInstalledToggle(this)"> Installed' +
       '</label>' +
       '<button type="button" class="btn-remove-row" onclick="this.closest(\'.repeater-row\').remove(); refreshModalAutoStatus();">✕</button>' +
     '</div>'
   );
   container.appendChild(div);
-  refreshModalAutoStatus();
+  if (!skipAutoRefresh) refreshModalAutoStatus();
 }
 
-function addToughenedRow(data) {
+function addToughenedRow(data, skipAutoRefresh) {
   data = data || {};
   var container = document.getElementById('toughenedContainer');
   var div = document.createElement('div');
@@ -1357,17 +1453,20 @@ function addToughenedRow(data) {
       '<option value="Received at Shop" ' + (data.hwStatus === 'Received at Shop' ? 'selected' : '') + '>HW: Arrived at Shop</option>' +
     '</select>' +
     '<div class="repeater-bottom-row">' +
+      '<label class="delivered-toggle">' +
+        '<input type="checkbox" class="tg_delivered" ' + (data.delivered ? 'checked' : '') + ' onchange="refreshModalAutoStatus()"> Delivered' +
+      '</label>' +
       '<label class="installed-toggle">' +
-        '<input type="checkbox" class="tg_installed" ' + (data.installed ? 'checked' : '') + ' onchange="refreshModalAutoStatus()"> Installed' +
+        '<input type="checkbox" class="tg_installed" ' + (data.installed ? 'checked' : '') + ' onchange="onInstalledToggle(this)"> Installed' +
       '</label>' +
       '<button type="button" class="btn-remove-row" onclick="this.closest(\'.repeater-row\').remove(); refreshModalAutoStatus();">✕</button>' +
     '</div>'
   );
   container.appendChild(div);
-  refreshModalAutoStatus();
+  if (!skipAutoRefresh) refreshModalAutoStatus();
 }
 
-function addFlatGlassRow(data) {
+function addFlatGlassRow(data, skipAutoRefresh) {
   data = data || {};
   var container = document.getElementById('flatGlassContainer');
   var div = document.createElement('div');
@@ -1387,14 +1486,17 @@ function addFlatGlassRow(data) {
       '<option value="Ready for Dispatch" ' + (data.processStatus === 'Ready for Dispatch' ? 'selected' : '') + '>Stage: Ready for Dispatch</option>' +
     '</select>' +
     '<div class="repeater-bottom-row">' +
+      '<label class="delivered-toggle">' +
+        '<input type="checkbox" class="fg_delivered" ' + (data.delivered ? 'checked' : '') + ' onchange="refreshModalAutoStatus()"> Delivered' +
+      '</label>' +
       '<label class="installed-toggle">' +
-        '<input type="checkbox" class="fg_installed" ' + (data.installed ? 'checked' : '') + ' onchange="refreshModalAutoStatus()"> Installed' +
+        '<input type="checkbox" class="fg_installed" ' + (data.installed ? 'checked' : '') + ' onchange="onInstalledToggle(this)"> Installed' +
       '</label>' +
       '<button type="button" class="btn-remove-row" onclick="this.closest(\'.repeater-row\').remove(); refreshModalAutoStatus();">✕</button>' +
     '</div>'
   );
   container.appendChild(div);
-  refreshModalAutoStatus();
+  if (!skipAutoRefresh) refreshModalAutoStatus();
 }
 
 function refreshModalAutoStatus() {
@@ -1420,31 +1522,39 @@ function buildSitePayloadFromForm() {
   }
 
   var shutters = [];
-  document.querySelectorAll('#profileShuttersContainer .repeater-row').forEach(function(row) {
+  var sRows = document.querySelectorAll('#profileShuttersContainer .repeater-row');
+  for (var i = 0; i < sRows.length; i++) {
+    var row = sRows[i];
     shutters.push({
       room: (row.querySelector('.ps_room') || {}).value || '',
       profile: (row.querySelector('.ps_profile') || {}).value || '',
       profileStatus: (row.querySelector('.ps_profileStatus') || {}).value || 'Available In Shop',
       glass: (row.querySelector('.ps_glass') || {}).value || '',
       glassStatus: (row.querySelector('.ps_glassStatus') || {}).value || 'Available In Stock',
+      delivered: !!((row.querySelector('.ps_delivered') || {}).checked),
       installed: !!((row.querySelector('.ps_installed') || {}).checked)
     });
-  });
+  }
 
   var slimline = [];
-  document.querySelectorAll('#slimlineContainer .repeater-row').forEach(function(row) {
+  var slRows = document.querySelectorAll('#slimlineContainer .repeater-row');
+  for (var i = 0; i < slRows.length; i++) {
+    var row = slRows[i];
     slimline.push({
       location: (row.querySelector('.sl_loc') || {}).value || '',
       profile: (row.querySelector('.sl_profile') || {}).value || '',
       profileStatus: (row.querySelector('.sl_profileStatus') || {}).value || 'Available In Shop',
       glass: (row.querySelector('.sl_glass') || {}).value || '',
       glassStatus: (row.querySelector('.sl_glassStatus') || {}).value || 'Available In Stock',
+      delivered: !!((row.querySelector('.sl_delivered') || {}).checked),
       installed: !!((row.querySelector('.sl_installed') || {}).checked)
     });
-  });
+  }
 
   var mirrors = [];
-  document.querySelectorAll('#mirrorsContainer .repeater-row').forEach(function(row) {
+  var mRows = document.querySelectorAll('#mirrorsContainer .repeater-row');
+  for (var i = 0; i < mRows.length; i++) {
+    var row = mRows[i];
     var typeVal = (row.querySelector('.m_type') || {}).value || 'Frameless (No LED)';
     var isFrameless = typeVal.indexOf('Frameless') !== -1;
     var isNoLED = typeVal.indexOf('No LED') !== -1;
@@ -1456,31 +1566,38 @@ function buildSitePayloadFromForm() {
       frameStatus: isFrameless ? 'N/A (Frameless)' : ((row.querySelector('.m_frameStatus') || {}).value || 'In Shop'),
       frostStatus: isNoLED ? 'Frosting N/A' : ((row.querySelector('.m_frost') || {}).value || 'Frosting N/A'),
       electricStatus: isNoLED ? 'N/A (No LED)' : ((row.querySelector('.m_electric') || {}).value || 'Drivers / Strips in Shop'),
+      delivered: !!((row.querySelector('.m_delivered') || {}).checked),
       installed: !!((row.querySelector('.m_installed') || {}).checked)
     });
-  });
+  }
 
   var toughened = [];
-  document.querySelectorAll('#toughenedContainer .repeater-row').forEach(function(row) {
+  var tgRows = document.querySelectorAll('#toughenedContainer .repeater-row');
+  for (var i = 0; i < tgRows.length; i++) {
+    var row = tgRows[i];
     toughened.push({
       location: (row.querySelector('.tg_loc') || {}).value || '',
       furnaceStatus: (row.querySelector('.tg_furnace') || {}).value || 'Cutouts Freeze',
       hwSpec: (row.querySelector('.tg_hwSpec') || {}).value || '',
       hwStatus: (row.querySelector('.tg_hwStatus') || {}).value || 'In Stock (SS)',
+      delivered: !!((row.querySelector('.tg_delivered') || {}).checked),
       installed: !!((row.querySelector('.tg_installed') || {}).checked)
     });
-  });
+  }
 
   var flatGlass = [];
-  document.querySelectorAll('#flatGlassContainer .repeater-row').forEach(function(row) {
+  var fgRows = document.querySelectorAll('#flatGlassContainer .repeater-row');
+  for (var i = 0; i < fgRows.length; i++) {
+    var row = fgRows[i];
     flatGlass.push({
       location: (row.querySelector('.fg_loc') || {}).value || '',
       glassSpec: (row.querySelector('.fg_glassSpec') || {}).value || '',
       availStatus: (row.querySelector('.fg_availStatus') || {}).value || 'In Stock',
       processStatus: (row.querySelector('.fg_processStatus') || {}).value || 'In Cutting',
+      delivered: !!((row.querySelector('.fg_delivered') || {}).checked),
       installed: !!((row.querySelector('.fg_installed') || {}).checked)
     });
-  });
+  }
 
   return {
     id: activeSiteId ? activeSiteId : Date.now(),
@@ -1508,7 +1625,7 @@ function saveActiveSite() {
   }
 
   if (activeSiteId) {
-    var idx = projectSites.findIndex(function(s) { return s.id === activeSiteId; });
+    var idx = projectSites.findIndex(function(s) { return String(s.id) === String(activeSiteId); });
     if (idx !== -1) projectSites[idx] = payload;
     else projectSites.unshift(payload);
   } else {
@@ -1529,7 +1646,7 @@ function deleteCurrentSite() {
     return;
   }
   if (confirm("Permanently delete this site tracker?")) {
-    projectSites = projectSites.filter(function(s) { return s.id !== activeSiteId; });
+    projectSites = projectSites.filter(function(s) { return String(s.id) !== String(activeSiteId); });
     saveToStorage();
     closeEditorModal();
     renderDashboard();
@@ -1626,10 +1743,11 @@ function renderStationBoard() {
     var urg = calculateUrgency(s.targetDate);
     var stagnant = getStagnantDays(s);
     var fabPct = auto.totalItems > 0 ? Math.round((auto.readyItems / auto.totalItems) * 100) : 0;
+    var delPct = auto.totalItems > 0 ? Math.round((auto.deliveredItems / auto.totalItems) * 100) : 0;
     var instPct = auto.totalItems > 0 ? Math.round((auto.installedItems / auto.totalItems) * 100) : 0;
 
     return (
-      '<tr onclick="openInspectModal(' + s.id + ')">' +
+      '<tr onclick="openInspectModal(\'' + s.id + '\')">' +
         '<td>' +
           '<div style="font-size:15px; font-weight:800; color:#fff;">' + s.client + '</div>' +
           '<div style="font-size:11px; color:#9ca3af;">' + (s.arch ? s.arch : 'Direct Client') + '</div>' +
@@ -1644,6 +1762,7 @@ function renderStationBoard() {
         '</td>' +
         '<td>' +
           '<div style="font-size:11px; color:#34d399;">Fab: ' + auto.readyItems + '/' + auto.totalItems + ' (' + fabPct + '%)</div>' +
+          '<div style="font-size:11px; color:#0284c7;">Del: ' + auto.deliveredItems + '/' + auto.totalItems + ' (' + delPct + '%)</div>' +
           '<div style="font-size:11px; color:#a78bfa;">Site: ' + auto.installedItems + '/' + auto.totalItems + ' (' + instPct + '%)</div>' +
         '</td>' +
         '<td>' +
@@ -1662,6 +1781,7 @@ function renderSpotlightCard() {
   var urg = calculateUrgency(s.targetDate);
   var card = document.getElementById('spotlightCardContent');
   var fabPct = auto.totalItems > 0 ? Math.round((auto.readyItems / auto.totalItems) * 100) : 0;
+  var delPct = auto.totalItems > 0 ? Math.round((auto.deliveredItems / auto.totalItems) * 100) : 0;
   var instPct = auto.totalItems > 0 ? Math.round((auto.installedItems / auto.totalItems) * 100) : 0;
 
   card.innerHTML = (
@@ -1687,14 +1807,18 @@ function renderSpotlightCard() {
       '<strong style="color:#fbbf24;">Live Bottleneck / Critical Action:</strong><br>' + auto.bottleneck +
     '</div>' +
 
-    '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:10px;">' +
+    '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:10px;">' +
       '<div style="background:#1f2937; border-radius:6px; padding:10px; border:1px solid #374151;">' +
         '<div style="font-size:10px; text-transform:uppercase; color:#9ca3af; font-weight:700;">Factory Readiness</div>' +
-        '<div style="font-size:14px; font-weight:800; color:#34d399;">' + auto.readyItems + ' / ' + auto.totalItems + ' Ready (' + fabPct + '%)</div>' +
+        '<div style="font-size:14px; font-weight:800; color:#34d399;">' + auto.readyItems + ' / ' + auto.totalItems + ' (' + fabPct + '%)</div>' +
       '</div>' +
       '<div style="background:#1f2937; border-radius:6px; padding:10px; border:1px solid #374151;">' +
-        '<div style="font-size:10px; text-transform:uppercase; color:#9ca3af; font-weight:700;">On-Site Installation</div>' +
-        '<div style="font-size:14px; font-weight:800; color:#a78bfa;">' + auto.installedItems + ' / ' + auto.totalItems + ' Fitted (' + instPct + '%)</div>' +
+        '<div style="font-size:10px; text-transform:uppercase; color:#9ca3af; font-weight:700;">Delivered at Site</div>' +
+        '<div style="font-size:14px; font-weight:800; color:#0284c7;">' + auto.deliveredItems + ' / ' + auto.totalItems + ' (' + delPct + '%)</div>' +
+      '</div>' +
+      '<div style="background:#1f2937; border-radius:6px; padding:10px; border:1px solid #374151;">' +
+        '<div style="font-size:10px; text-transform:uppercase; color:#9ca3af; font-weight:700;">Site Installed</div>' +
+        '<div style="font-size:14px; font-weight:800; color:#a78bfa;">' + auto.installedItems + ' / ' + auto.totalItems + ' (' + instPct + '%)</div>' +
       '</div>' +
     '</div>'
   );
